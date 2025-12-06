@@ -84,8 +84,7 @@ export function SkillsSection() {
                 <Briefcase className="size-6 text-primary" />
               </div>
               <h4 className="font-semibold mb-2">{service.title}</h4>
-              <p className="text-sm text-muted-foreground mb-4">{service.description}</p>
-              <p className="text-sm font-medium text-primary">{service.price}</p>
+              <p className="text-sm text-muted-foreground">{service.description}</p>
             </motion.div>
           ))}
         </div>

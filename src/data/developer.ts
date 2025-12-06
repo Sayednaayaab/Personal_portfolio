@@ -4,57 +4,56 @@
  */
 
 export const developerInfo = {
-  name: "Alex Chen",
-  title: "Full-Stack Developer",
-  tagline: "Building Impactful Web Experiences",
-  heroSubtitle: "Crafting scalable solutions with React, Python & modern web technologies",
-  email: "alex@example.com",
-  phone: "+1 (555) 123-4567",
-  location: "San Francisco, CA",
-  timezone: "PST",
-  yearsOfExperience: 5,
-  projectsCompleted: 50,
-  happyClients: 30,
+  name: "Sayed Mirchoni",
+  title: "Web developer",
+  tagline: "Building impactful web experiences",
+  heroSubtitle: "Crafting scalable solutions with React, Python, Android & modern technologies",
+  email: "www.naayaab2004@gmail.com",
+  phone: "+91 8618238048",
+  location: "Banglore,Karnataka,India",
+  timezone: "IST",
+  yearsOfExperience: 0,
+  projectsCompleted: 10,
+  happyClients: 8,
   
-  biography: `I'm a passionate full-stack developer with 5+ years of experience building 
-scalable web applications and APIs. My journey started with a Computer Science degree, 
-but my true education came from countless late nights debugging code and shipping products 
-that users love.
+  biography: `I'm a passionate full-stack developer with experience in web and Android development.
+My journey started with a Computer Science degree, and I've built impactful solutions
+from e-commerce platforms to gym membership systems and resume analyzers.
 
-I specialize in React.js for frontend development and Python/Flask for backend services. 
-I've built everything from e-commerce platforms handling thousands of transactions to 
-resume analyzers using NLP and weather apps with real-time data.
+I specialize in React.js for frontend development, Python for backend services, and Android
+development for mobile applications. I've created scalable web apps handling thousands of
+transactions and intuitive Android apps that users love.
 
-When I'm not coding, you'll find me contributing to open-source projects, writing 
-technical blog posts, or exploring the latest in AI and machine learning. I believe 
-great software is built with empathy—understanding user needs and translating them 
+When I'm not coding, you'll find me contributing to open-source projects, writing
+technical blog posts, or exploring the latest in mobile and web technologies. I believe
+great software is built with empathy—understanding user needs and translating them
 into elegant, performant solutions.`,
 
   funFacts: [
     "I've written over 500,000 lines of code",
-    "My first program was a text-based adventure game in Python",
-    "I can solve a Rubik's cube in under 2 minutes",
-    "Coffee consumption: ~4 cups per coding session",
+    "My first program was a Gym mebership platform",
+    "I can picturize clearly what is said",
+    "Coffee consumption: ~2 cups per coding session",
   ],
 
   education: [
     {
-      degree: "B.S. Computer Science",
-      school: "University of California, Berkeley",
-      year: "2019",
+      degree: "B.E in Computer Science",
+      school: "Smt Kamala and Shri Venkappa M Agadi Collge of Engineering and Technology",
+      year: "2026",
       focus: "Software Engineering & AI",
     },
   ],
 
   experience: [
     {
-      title: "Senior Full-Stack Developer",
+      title: "Senior Web Developer",
       company: "TechCorp Inc.",
       period: "2022 - Present",
       description: "Leading frontend architecture and API development for enterprise SaaS platform.",
     },
     {
-      title: "Full-Stack Developer",
+      title: "Web Developer",
       company: "StartupXYZ",
       period: "2020 - 2022",
       description: "Built e-commerce solutions and integrated payment systems serving 10K+ users.",
@@ -68,10 +67,10 @@ into elegant, performant solutions.`,
   ],
 
   socialLinks: {
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    twitter: "https://twitter.com",
-    email: "mailto:alex@example.com",
+    github: "https://github.com/Sayednaayaab",
+    linkedin: "https://www.linkedin.com/in/sayed-mirchoni/",
+    twitter: "https://x.com/NaayaabM74053?t=YTevlnX_FHVKampX9r-3TA&s=09",
+    email: "www.naayaab2004@gmail.com",
   },
 
   resumeUrl: "/resume.pdf",
@@ -84,22 +83,20 @@ export const skills = {
     { name: "JavaScript", level: 95, icon: "javascript" },
     { name: "HTML/CSS", level: 95, icon: "html" },
     { name: "Tailwind CSS", level: 90, icon: "tailwind" },
-    { name: "Next.js", level: 85, icon: "nextjs" },
   ],
   backend: [
     { name: "Python", level: 90, icon: "python" },
-    { name: "Flask", level: 88, icon: "flask" },
     { name: "Express.js", level: 85, icon: "express" },
     { name: "Node.js", level: 85, icon: "nodejs" },
-    { name: "PostgreSQL", level: 82, icon: "postgresql" },
-    { name: "MongoDB", level: 80, icon: "mongodb" },
+  ],
+  mobile: [
+    { name: "Android Development", level: 90, icon: "android" },
+    { name: "Java", level: 85, icon: "java" },
+    { name: "Kotlin", level: 80, icon: "kotlin" },
   ],
   tools: [
     { name: "Git", level: 92 },
-    { name: "Docker", level: 78 },
-    { name: "AWS", level: 75 },
-    { name: "Linux", level: 85 },
-    { name: "VS Code", level: 95 },
+    { name: "Android Studio", level: 95 },
     { name: "Figma", level: 70 },
   ],
 };
@@ -107,27 +104,23 @@ export const skills = {
 export const services = [
   {
     title: "Custom Web Applications",
-    description: "Full-stack web apps built with React, Next.js, and modern backend technologies. Scalable, secure, and user-friendly.",
+    description: "Web apps built with React and modern backend technologies. Scalable, secure, and user-friendly.",
     icon: "code",
-    price: "Starting at $3,000",
-  },
-  {
-    title: "API Development & Integration",
-    description: "RESTful and GraphQL APIs, third-party integrations, payment gateways, and real-time data services.",
-    icon: "api",
-    price: "Starting at $1,500",
   },
   {
     title: "E-commerce Solutions",
     description: "Custom online stores with secure checkout, inventory management, and analytics dashboards.",
     icon: "shopping",
-    price: "Starting at $5,000",
+  },
+  {
+    title: "Android App Development",
+    description: "Native Android applications built with Java and Kotlin. Feature-rich, performant, and user-centric mobile solutions.",
+    icon: "android",
   },
   {
     title: "Technical Consulting",
     description: "Architecture reviews, performance optimization, and technical strategy for your development team.",
     icon: "consulting",
-    price: "$150/hour",
   },
 ];
 
@@ -263,29 +256,29 @@ export const projects = [
 export const testimonials = [
   {
     id: 1,
-    name: "Sarah Johnson",
-    role: "Product Manager",
-    company: "TechStartup Inc.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop",
-    content: "Alex delivered our e-commerce platform ahead of schedule and exceeded all expectations. The attention to detail and code quality was exceptional. Our conversion rate increased by 35% after launch.",
+    name: "Rahul Sharma",
+    role: "CEO",
+    company: "InnovateTech Solutions",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80&fm=jpg&crop=faces",
+    content: "Sayed's expertise in full-stack development transformed our business operations. The Android app he developed has over 50,000 downloads and excellent user reviews. His understanding of Indian market needs was invaluable.",
     rating: 5,
   },
   {
     id: 2,
-    name: "Michael Chen",
-    role: "CTO",
-    company: "DataFlow Systems",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop",
-    content: "Working with Alex on our API infrastructure was a game-changer. The documentation was thorough, the code was clean, and performance improved by 60%. Highly recommend for any backend work.",
+    name: "Priya Patel",
+    role: "Marketing Director",
+    company: "DigitalWave India",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80&fm=jpg&crop=faces",
+    content: "Working with Sayed was a pleasure. He delivered our e-commerce website with stunning UI/UX design and robust backend. The site handles high traffic seamlessly and our sales have increased significantly.",
     rating: 5,
   },
   {
     id: 3,
-    name: "Emily Rodriguez",
-    role: "Founder",
-    company: "CreativeHub",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop",
-    content: "Alex built our portfolio platform from scratch and it's beautiful. The user experience is seamless, and our clients love it. Communication throughout the project was excellent.",
+    name: "Arjun Kumar",
+    role: "Technical Lead",
+    company: "FinTech Innovations",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80&fm=jpg&crop=faces",
+    content: "Sayed's Python and React skills are top-notch. He built our financial dashboard with complex data visualizations and real-time updates. The code is maintainable and the performance is outstanding.",
     rating: 5,
   },
 ];

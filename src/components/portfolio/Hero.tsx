@@ -90,8 +90,8 @@ export function Hero() {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="h-8"
           >
-            <TypewriterEffect 
-              words={['React.js', 'Python', 'Node.js', 'TypeScript', 'Flask', 'PostgreSQL', 'REST APIs', 'Cloud Services']}
+            <TypewriterEffect
+              words={['React.js', 'Python', 'JavaScript','Express.js', 'Tailwind', 'Android dev', '']}
               className="text-lg md:text-xl font-mono text-accent"
             />
           </motion.div>

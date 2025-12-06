@@ -9,9 +9,9 @@ import { SEOHead } from '@/components/seo/SEOHead';
 export default function Home() {
   return (
     <>
-      <SEOHead 
-        title="Alex Chen | Full-Stack Developer"
-        description="Full-stack developer specializing in React, Python, and modern web technologies. Building impactful web experiences."
+      <SEOHead
+        title="Sayed Mirchoni | Web developer"
+        description="Web developer specializing in React, Python, and modern web technologies. Building impactful web experiences."
       />
       <div className="min-h-screen">
         <Hero />
