@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Briefcase } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
@@ -46,9 +46,9 @@ export function Header() {
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="text-xl font-bold gradient-text">
-            {developerInfo.name.split(' ')[0]}
-            <span className="text-foreground">.</span>
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold gradient-text">
+            <Briefcase className="size-6" />
+            Portfolio
           </Link>
 
           {/* Desktop Navigation */}
