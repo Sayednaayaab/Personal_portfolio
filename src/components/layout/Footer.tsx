@@ -1,4 +1,4 @@
-import { Github, Linkedin, Twitter, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
 
 const socialLinks = [
@@ -9,6 +9,7 @@ const socialLinks = [
 ];
 
 const quickLinks = [
+  { name: 'Home', href: '#' },
   { name: 'About', href: '#about' },
   { name: 'Projects', href: '#projects' },
   { name: 'Skills', href: '#skills' },
@@ -34,6 +35,12 @@ export function Footer() {
               <a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => {
+                  if (link.href === '#') {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.name}
@@ -61,9 +68,6 @@ export function Footer() {
         <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
             © {currentYear} {developerInfo.name}. All rights reserved.
-          </p>
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
-            Made with <Heart className="size-4 text-destructive fill-destructive" /> using React + TailwindCSS
           </p>
         </div>
       </div>

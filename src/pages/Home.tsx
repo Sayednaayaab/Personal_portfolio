@@ -2,7 +2,6 @@ import { Hero } from '@/components/portfolio/Hero';
 import { AboutSection } from '@/components/portfolio/AboutSection';
 import { ProjectsSection } from '@/components/portfolio/ProjectsSection';
 import { SkillsSection } from '@/components/portfolio/SkillsSection';
-import { TestimonialsSection } from '@/components/portfolio/TestimonialsSection';
 import { ContactSection } from '@/components/portfolio/ContactSection';
 import { SEOHead } from '@/components/seo/SEOHead';
 
@@ -18,7 +17,6 @@ export default function Home() {
         <AboutSection />
         <ProjectsSection />
         <SkillsSection />
-        <TestimonialsSection />
         <ContactSection />
       </div>
     </>

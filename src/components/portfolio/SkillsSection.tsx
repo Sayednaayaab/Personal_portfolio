@@ -20,10 +20,11 @@ export function SkillsSection() {
         </motion.div>
 
         {/* Skills */}
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
+        <div className="grid md:grid-cols-4 gap-8 mb-20">
           {[
             { title: 'Frontend', icon: Code, skills: skills.frontend },
             { title: 'Backend', icon: Server, skills: skills.backend },
+            { title: 'Mobile', icon: Code, skills: skills.mobile },
             { title: 'Tools', icon: Wrench, skills: skills.tools },
           ].map((category, i) => (
             <motion.div

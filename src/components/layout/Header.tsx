@@ -10,6 +10,7 @@ import { developerInfo } from '@/data/developer';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
+  { name: 'Home', path: '#' },
   { name: 'About', path: '#about' },
   { name: 'Projects', path: '#projects' },
   { name: 'Skills', path: '#skills' },
@@ -24,7 +25,10 @@ export function Header() {
   const isHomepage = location.pathname === '/';
 
   const handleNavClick = (path: string) => {
-    if (path.startsWith('#')) {
+    if (path === '#') {
+      // Scroll to top for Home
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (path.startsWith('#')) {
       const element = document.getElementById(path.slice(1));
       element?.scrollIntoView({ behavior: 'smooth' });
     }
