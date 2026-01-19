@@ -212,8 +212,8 @@ export const projects = [
     longDescription: "Created a comprehensive gym platform with personalized workout plans, class scheduling, trainer profiles, progress tracking dashboards, and fitness analytics.",
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop",
     techStack: ["React.js", "Node.js", "TailwindCSS","TypeScript","Vercel"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
+    liveUrl: "https://gymbuddy-ai-your-smart-coach.vercel.app/",
+    githubUrl: "https://github.com/Sayednaayaab/gymbuddy-ai-your-smart-coach.git",
     featured: true,
    
     challenges: [
@@ -230,8 +230,8 @@ export const projects = [
     longDescription: "Built a platform for farmers to showcase produce, manage listings, connect with buyers, and access farming resources, market analytics, and weather forecasts.",
     image: "https://images.unsplash.com/photo-1500595046891-90c22e7b2c26?w=800&auto=format&fit=crop",
     techStack: ["React.js", "Node.js", "TailwindCSS","TypeScript","Vercel"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
+    liveUrl: "https://farmwise-hub.vercel.app/",
+    githubUrl: "https://github.com/Sayednaayaab/farmwise-hub.git",
     featured: true,
     
     challenges: [
