@@ -48,7 +48,7 @@ export function Footer() {
             ))}
           </div>
 
-          {/* Social Links */}
+          {/* Social media Links */}
           <div className="flex justify-end gap-4">
             {socialLinks.map((link) => (
               <a

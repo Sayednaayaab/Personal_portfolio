@@ -65,12 +65,13 @@ export function ContactForm() {
     },
   });
 
+
+
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Formspree integration - replace YOUR_FORM_ID with your actual form ID
-      const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +81,6 @@ export function ContactForm() {
           email: data.email,
           projectType: data.projectType,
           message: data.message,
-          _subject: `New ${data.projectType} inquiry from ${data.name}`,
         }),
       });
 

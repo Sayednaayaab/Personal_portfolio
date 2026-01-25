@@ -61,13 +61,13 @@ export function Header() {
               <button
                 key={link.path}
                 onClick={() => handleNavClick(link.path)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 {link.name}
               </button>
             ))}
             <ThemeToggle />
-            <Button size="sm" onClick={() => handleNavClick('#contact')}>
+            <Button size="sm" onClick={() => handleNavClick('#contact')} className="cursor-pointer">
               Hire Me
             </Button>
           </nav>
@@ -87,7 +87,7 @@ export function Header() {
                     <button
                       key={link.path}
                       onClick={() => handleNavClick(link.path)}
-                      className="text-lg font-medium text-left"
+                      className="text-lg font-medium text-left cursor-pointer"
                     >
                       {link.name}
                     </button>

@@ -67,9 +67,7 @@ export function AboutSection() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4">
               {[
-                { label: 'Years Experience', value: `${developerInfo.yearsOfExperience}+`, icon: Calendar },
                 { label: 'Projects Completed', value: `${developerInfo.projectsCompleted}+`, icon: Code },
-                { label: 'Happy Clients', value: `${developerInfo.happyClients}+`, icon: Coffee },
                 { label: 'Lines of Code', value: '500K+', icon: Code },
               ].map((stat, i) => (
                 <motion.div
