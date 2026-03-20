@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { ParticleBackground } from '@/components/portfolio/ParticleBackground';
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,11 +18,12 @@ export function Layout({ children }: LayoutProps) {
   const isHomepage = location.pathname === '/';
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="relative min-h-screen flex flex-col overflow-hidden">
+      <ParticleBackground />
       <Header />
       <main 
         id="main-content" 
-        className={`flex-1 ${isHomepage ? '' : 'pt-16'}`}
+        className={`flex-1 relative z-10 ${isHomepage ? '' : 'pt-16'}`}
         tabIndex={-1}
       >
         {children}

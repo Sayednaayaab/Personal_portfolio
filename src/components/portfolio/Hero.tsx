@@ -5,6 +5,7 @@ import { developerInfo } from '@/data/developer';
 import { TypewriterEffect } from './TypewriterEffect';
 import { ParticleBackground } from './ParticleBackground';
 import { TechStackIcons } from './TechStackIcons';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const socialLinks = [
   { icon: Github, href: developerInfo.socialLinks.github, label: 'GitHub' },
@@ -24,21 +25,11 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Particle Background */}
-      <ParticleBackground />
+      {/* Removed duplicate - global from Layout */}
       
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+      {/* Gradient Overlay removed - transparent for global parallax visibility */}
       
-      {/* Grid Pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05]"
-        style={{
-          backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px),
-                            linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
+
 
       {/* Content */}
       <div className="relative z-10 container-custom text-center">
@@ -63,7 +54,21 @@ export function Hero() {
           </motion.div>
 
           {/* Name & Title */}
-          <div className="space-y-4">
+          <div className="space-y-6 md:space-y-8">
+            {/* Hero Profile Photo */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="mx-auto mb-8 flex justify-center"
+            >
+              <div className="relative group">
+                <Avatar className="w-36 h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 ring-4 ring-background/50 shadow-2xl shadow-primary/20 hover:shadow-primary/40 hover:scale-[1.05] transition-all duration-500 rounded-full border-4 border-primary/10 group-hover:border-primary/30">
+                  <AvatarImage src={developerInfo.profileImage} className="object-cover rounded-full" />
+                  <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-primary to-secondary text-primary">SM</AvatarFallback>
+                </Avatar>
+              </div>
+            </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -165,7 +170,7 @@ export function Hero() {
             transition={{ delay: 1.2, duration: 0.8 }}
             className="pt-12"
           >
-            <TechStackIcons />
+            <TechStackIcons progress={100} />
           </motion.div>
         </motion.div>
       </div>

@@ -1,12 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, Briefcase } from 'lucide-react';
+import { developerInfo } from '@/data/developer';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 import { ThemeToggle } from './ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { developerInfo } from '@/data/developer';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -26,7 +27,6 @@ export function Header() {
 
   const handleNavClick = (path: string) => {
     if (path === '#') {
-      // Scroll to top for Home
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (path.startsWith('#')) {
       const element = document.getElementById(path.slice(1));
@@ -50,21 +50,28 @@ export function Header() {
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold gradient-text">
-            <Briefcase className="size-6" />
-            Portfolio
+          <Link to="/" className="inline-flex items-center gap-2.5 text-xl font-bold gradient-text h-full">
+            <Briefcase className="size-7 flex-shrink-0" />
+            <span className="font-bold leading-none">Portfolio</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
+              <motion.button
                 key={link.path}
                 onClick={() => handleNavClick(link.path)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer inline-flex items-center gap-1 group"
               >
                 {link.name}
-              </button>
+                <motion.div 
+                  className="h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-300"
+                  initial={{ width: 0 }}
+                  animate={{ width: link.path === '#' ? '100%' : 0 }}
+                />
+              </motion.button>
             ))}
             <ThemeToggle />
             <Button size="sm" onClick={() => handleNavClick('#contact')} className="cursor-pointer">

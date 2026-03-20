@@ -20,6 +20,9 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+import { Preloader } from "@/components/ui/Preloader";
+import { useState, useEffect, useCallback } from "react";
+
 const queryClient = new QueryClient();
 
 function AnimatedRoutes() {
@@ -81,25 +84,42 @@ function AnimatedRoutes() {
   );
 }
 
-const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <SkipToContent />
-            <Layout>
-              <Suspense fallback={<LoadingFallback />}>
-                <AnimatedRoutes />
-              </Suspense>
-            </Layout>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
-);
+function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleComplete = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(handleComplete, 4000);
+    return () => clearTimeout(timer);
+  }, [handleComplete]);
+
+  if (isLoading) {
+    return <Preloader onComplete={handleComplete} />;
+  }
+
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <SkipToContent />
+              <Layout>
+                <Suspense fallback={<LoadingFallback />}>
+                  <AnimatedRoutes />
+                </Suspense>
+              </Layout>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
+}
 
 export default App;

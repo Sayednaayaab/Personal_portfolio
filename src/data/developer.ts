@@ -5,9 +5,10 @@
 
 export const developerInfo = {
   name: "Sayed Mirchoni",
+  profileImage: '/sayed.jpg',
   title: "Web developer",
   tagline: "Building impactful web experiences",
-  heroSubtitle: "Crafting scalable solutions with React, Python, Android & modern technologies",
+  heroSubtitle: "Crafting scalable solutions with React, Node.js, Android & modern technologies",
   email: "www.naayaab2004@gmail.com",
   phone: "+91 8618238048",
   location: "Banglore,Karnataka,India",
@@ -16,18 +17,11 @@ export const developerInfo = {
   projectsCompleted: 10,
   happyClients: 8,
   
-  biography: `I'm a passionate full-stack developer with experience in web and Android development.
-My journey started with a Computer Science degree, and I've built impactful solutions
-from e-commerce platforms to gym membership systems and resume analyzers.
+  biography: `I'm a motivated Computer Science student and aspiring full-stack developer passionate about web and Android development. Currently pursuing my B.E. degree, I've built several personal projects including e-commerce platforms, gym management systems, and resume analyzers that showcase my skills.
 
-I specialize in React.js for frontend development, Python for backend services, and Android
-development for mobile applications. I've created scalable web apps handling thousands of
-transactions and intuitive Android apps that users love.
+I specialize in React.js for dynamic frontend experiences, Node.js for backend APIs and services,React native and Android studio for mobile apps. Through hands-on projects, I've created scalable web apps and intuitive mobile applications while continuously learning modern technologies.
 
-When I'm not coding, you'll find me contributing to open-source projects, writing
-technical blog posts, or exploring the latest in mobile and web technologies. I believe
-great software is built with empathy—understanding user needs and translating them
-into elegant, performant solutions.`,
+When not coding, I research on technologies, observe what's going on in the market, and explore the latest in web and mobile development. I believe great software starts with understanding user needs and delivering clean, efficient solutions.`,
 
   funFacts: [
     "I've written over 500,000 lines of code",
@@ -39,30 +33,9 @@ into elegant, performant solutions.`,
   education: [
     {
       degree: "B.E in Computer Science",
-      school: "Smt Kamala and Shri Venkappa M Agadi Collge of Engineering and Technology",
+      school: "Smt Kamala and Shri Venkappa M Agadi College of Engineering and Technology",
       year: "2026",
       focus: "Software Engineering & AI",
-    },
-  ],
-
-  experience: [
-    {
-      title: "Senior Web Developer",
-      company: "TechCorp Inc.",
-      period: "2022 - Present",
-      description: "Leading frontend architecture and API development for enterprise SaaS platform.",
-    },
-    {
-      title: "Web Developer",
-      company: "StartupXYZ",
-      period: "2020 - 2022",
-      description: "Built e-commerce solutions and integrated payment systems serving 10K+ users.",
-    },
-    {
-      title: "Junior Developer",
-      company: "WebAgency",
-      period: "2019 - 2020",
-      description: "Developed responsive websites and RESTful APIs for various clients.",
     },
   ],
 
@@ -73,7 +46,7 @@ into elegant, performant solutions.`,
     email: "mailto:www.naayaab2004@gmail.com",
   },
 
-  resumeUrl: "/2KA22CS042-SAYED MIRCHONI.pdf",
+  resumeUrl: "/SAYED__RESUME.pdf",
 };
 
 export const skills = {
@@ -275,3 +248,4 @@ export const blogPosts = [
 export const getFeaturedProjects = () => projects.filter(p => p.featured);
 export const getAllProjects = () => projects;
 export const getProjectById = (id: string) => projects.find(p => p.id === id);
+

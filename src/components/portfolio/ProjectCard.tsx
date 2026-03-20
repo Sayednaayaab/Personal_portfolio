@@ -21,7 +21,6 @@ export function ProjectCard({
   showCategory = true,
   index = 0 
 }: ProjectCardProps) {
-  const [isLoaded, setIsLoaded] = React.useState(false);
   const ratio = aspectRatio || 'landscape';
   
   const aspectRatioClasses = {
@@ -42,21 +41,14 @@ export function ProjectCard({
       >
         {/* Image Container */}
         <div className={cn('relative overflow-hidden bg-muted', aspectRatioClasses[ratio])}>
-          {/* Loading placeholder */}
-          {!isLoaded && (
-            <div className="absolute inset-0 bg-muted" />
-          )}
-          
+          {/* Image element with object-cover for consistent cropping */}
           <motion.img
             src={project.coverImage}
             alt={project.title}
             className={cn(
               'absolute inset-0 w-full h-full object-cover transition-all duration-700',
-              isLoaded ? 'opacity-100' : 'opacity-0',
               'group-hover:scale-110'
             )}
-            loading={index < 6 ? 'eager' : 'lazy'}
-            onLoad={() => setIsLoaded(true)}
           />
           
           {/* Overlay with gradient and text */}

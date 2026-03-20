@@ -1,18 +1,16 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Mail, MapPin, Phone, Send, Calendar, Copy, Check } from 'lucide-react';
+import { Mail, MapPin, Phone, Calendar, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { developerInfo } from '@/data/developer';
+import { FuturisticContactForm } from '@/components/forms/FuturisticContactForm';
 
 export function ContactSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const copyEmail = () => {
     navigator.clipboard.writeText(developerInfo.email);
@@ -21,32 +19,22 @@ export function ContactSection() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast({ title: "Message sent!", description: "I'll get back to you soon." });
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
-  };
-
   return (
     <section id="contact" className="section-padding bg-secondary/30" ref={ref}>
       <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}  
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Let's Work Together</h2>
           <p className="text-muted-foreground text-lg">Have a project in mind? Let's discuss it.</p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16 space-y-12 md:space-y-0">
           {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.2 }}
             className="space-y-8"
@@ -84,26 +72,17 @@ export function ContactSection() {
           </motion.div>
 
           {/* Contact Form */}
-          <motion.form
-            initial={{ opacity: 0, x: 40 }}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.4 }}
-            onSubmit={handleSubmit}
-            className="space-y-6 p-6 rounded-2xl bg-card border border-border"
+            transition={{ delay: 0.3 }}
           >
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Input placeholder="Your Name" required className="bg-background" />
-              <Input type="email" placeholder="Your Email" required className="bg-background" />
-            </div>
-            <Input placeholder="Subject" required className="bg-background" />
-            <Textarea placeholder="Your Message" rows={5} required className="bg-background resize-none" />
-            <Button type="submit" size="lg" className="w-full gradient-animated" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Message'}
-              <Send className="ml-2 size-4" />
-            </Button>
-          </motion.form>
+            <h3 className="text-2xl font-bold mb-8 text-center md:text-left mb-6">Send a Message</h3>
+            <FuturisticContactForm />
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
+

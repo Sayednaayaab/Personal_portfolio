@@ -89,7 +89,7 @@ export const projects: Project[] = [
     category: 'farmers',
     year: '2026',
     slug: 'farmers-friend-website',
-    coverImage: 'https://images.unsplash.com/photo-1500595046891-90c22e7b2c26?auto=format&fit=crop&w=1400&q=80',
+    coverImage: '/images/crop-field.jpg',
     description: 'Empowering farmers with a digital marketplace to sell produce directly, access real-time market analytics, and connect with buyers in their communities.',
     client: 'FarmersCoop',
     location: 'Rural Communities',
@@ -98,6 +98,13 @@ export const projects: Project[] = [
         id: '5-1',
         src: 'https://images.unsplash.com/photo-1488551557933-47db882dd6a3?auto=format&fit=crop&w=1200&q=80',
         alt: 'Farmers marketplace platform',
+        aspectRatio: 'landscape'
+      }
+      ,
+      {
+        id: '5-2',
+        src: '/images/crop-field.jpg',
+        alt: 'Farm field and market',
         aspectRatio: 'landscape'
       }
     ]

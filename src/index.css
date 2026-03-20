@@ -225,6 +225,17 @@
   }
 }
 
+@keyframes parallax-network {
+  0%, 100% { opacity: 0.2; stroke-opacity: 0.3; }
+  50% { opacity: 0.6; stroke-opacity: 0.6; }
+}
+
+@keyframes parallax-float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  33% { transform: translateY(-15px) scale(1.05); }
+  66% { transform: translateY(-8px) scale(0.95); }
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -258,6 +269,29 @@
 
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Parallax Network */
+  .network-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .parallax-layer-back { --parallax-speed: 0.5; }
+  .parallax-layer-mid { --parallax-speed: 0.3; }
+  .parallax-layer-front { --parallax-speed: 0.1; }
+
+  .network-line {
+    stroke: var(--primary);
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: 0.4;
+    mix-blend-mode: screen;
+    stroke-dasharray: 2 2;
+    animation: parallax-network 4s ease-in-out infinite;
   }
 
   /* Gradient Text */
@@ -343,35 +377,49 @@
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-}
 
-/* Custom scrollbar for dark mode */
-.dark {
-  scrollbar-color: hsl(220 20% 25%) transparent;
-}
+  /* Preloader Progress Bar */
+  .preloader-progress-bg {
+    background: hsl(var(--muted) / 0.4);
+  }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+  .dark .preloader-progress-bg {
+    background: hsl(var(--muted) / 0.6);
+  }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+  .progress-fill {
+    will-change: width;
+    border-radius: 0;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(220 14% 70%);
-  border-radius: 4px;
-}
+  /* Custom scrollbar for dark mode */
+  .dark {
+    scrollbar-color: hsl(220 20% 25%) transparent;
+  }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: hsl(220 20% 25%);
-}
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(220 14% 50%);
-}
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: hsl(220 20% 35%);
+  ::-webkit-scrollbar-thumb {
+    background: hsl(220 14% 70%);
+    border-radius: 4px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(220 20% 25%);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(220 14% 50%);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(220 20% 35%);
+  }
 }
