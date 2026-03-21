@@ -213,7 +213,7 @@ export function FuturisticContactForm() {
           <motion.div className="pt-4">
             <Button
               type="submit"
-              className="w-full h-16 rounded-3xl bg-gradient-to-r from-primary via-primary/90 to-accent font-semibold text-lg shadow-2xl hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:scale-[1.02] hover:from-primary/90 hover:to-accent/90 border-0 relative overflow-hidden group"
+className="w-full h-16 rounded-3xl bg-gradient-to-r from-primary via-primary/90 to-accent font-semibold text-lg shadow-2xl hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:scale-[1.02] hover:from-primary/90 hover:to-accent/90 border-0 relative overflow-hidden group cursor-pointer"
               disabled={isSubmitting}
             >
               <AnimatePresence mode="wait">
