@@ -1,5 +1,7 @@
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail, ArrowUp } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
+import { MagneticButton } from '@/components/ui/MagneticButton';
+import { scrollToId, scrollToTarget } from '@/lib/smoothScroll';
 
 const socialLinks = [
   { icon: Github, href: developerInfo.socialLinks.github, label: 'GitHub' },
@@ -9,66 +11,75 @@ const socialLinks = [
 ];
 
 const quickLinks = [
-  { name: 'Home', href: '#' },
-  { name: 'About', href: '#about' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Home', id: 'home' },
+  { name: 'About', id: 'about' },
+  { name: 'Projects', id: 'projects' },
+  { name: 'Skills', id: 'skills' },
+  { name: 'Experience', id: 'experience' },
+  { name: 'Contact', id: 'contact' },
 ];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
+  const handleScrollTo = (id: string) => {
+    if (id === 'home') scrollToTarget(0);
+    else scrollToId(id);
+  };
+
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="container-custom py-12">
+    <footer className="border-t border-border/80 bg-card/60 backdrop-blur-md">
+      <div className="container-custom py-14">
         <div className="grid md:grid-cols-3 gap-8 items-center">
           {/* Brand */}
-          <div>
-            <h3 className="text-xl font-bold gradient-text mb-2">{developerInfo.name}</h3>
-            <p className="text-sm text-muted-foreground">{developerInfo.title}</p>
+          <div className="space-y-1 text-center md:text-left">
+            <h3 className="text-xl font-bold gradient-text">{developerInfo.name}</h3>
+            <p className="text-xs text-muted-foreground">{developerInfo.heroSubtitle}</p>
           </div>
 
           {/* Quick Links */}
-          <div className="flex justify-center gap-6">
+          <div className="flex justify-center flex-wrap gap-6">
             {quickLinks.map((link) => (
-              <a
+              <button
                 key={link.name}
-                href={link.href}
-                onClick={(e) => {
-                  if (link.href === '#') {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }
-                }}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => handleScrollTo(link.id)}
+                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 {link.name}
-              </a>
+              </button>
             ))}
           </div>
 
           {/* Social media Links */}
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-center md:justify-end items-center gap-3">
             {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-all"
-                aria-label={link.label}
-              >
-                <link.icon className="size-4" />
-              </a>
+              <MagneticButton key={link.label} strength={15}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-full bg-secondary/80 hover:bg-primary hover:text-primary-foreground transition-all duration-300 inline-flex items-center justify-center border border-border/40 hover:border-transparent"
+                  aria-label={link.label}
+                >
+                  <link.icon className="size-4" />
+                </a>
+              </MagneticButton>
             ))}
+            <MagneticButton strength={15}>
+              <button
+                onClick={() => handleScrollTo('home')}
+                className="p-2.5 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 inline-flex items-center justify-center cursor-pointer"
+                aria-label="Back to top"
+              >
+                <ArrowUp className="size-4" />
+              </button>
+            </MagneticButton>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {currentYear} {developerInfo.name}. All rights reserved.
-          </p>
+        <div className="mt-10 pt-6 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
+          <p>© {currentYear} {developerInfo.name}. All rights reserved.</p>
+          <p className="font-mono">Engineered with React, TypeScript & Tailwind CSS</p>
         </div>
       </div>
     </footer>

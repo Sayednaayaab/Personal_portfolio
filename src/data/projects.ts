@@ -7,20 +7,20 @@ export const projects: Project[] = [
     category: 'e-commerce',
     year: '2026',
     slug: 'vivid-commerce-website',
-    coverImage: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=2000&q=85',
     description: 'A vibrant e-commerce platform featuring dynamic product catalogs, seamless shopping cart experience, and modern checkout flow with integrated payment systems.',
     client: 'Vivid Retail',
     location: 'Remote',
     images: [
       {
         id: '1-1',
-        src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80',
+        src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=2000&q=85',
         alt: 'Vivid product showcase',
         aspectRatio: 'landscape'
       },
       {
         id: '1-2',
-        src: 'https://images.unsplash.com/photo-1555529771-94b4f0b9be3b?auto=format&fit=crop&w=1200&q=80',
+        src: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=2000&q=85',
         alt: 'Checkout experience',
         aspectRatio: 'portrait'
       }
@@ -32,14 +32,14 @@ export const projects: Project[] = [
     category: 'healthcare',
     year: '2026',
     slug: 'health-care-website',
-    coverImage: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1400&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=2000&q=85',
     description: 'Comprehensive healthcare platform connecting patients with providers, featuring appointment scheduling, telemedicine capabilities, and secure health records management.',
     client: 'Health Plus Clinic',
     location: 'Multiple Locations',
     images: [
       {
         id: '2-1',
-        src: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+        src: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=2000&q=85',
         alt: 'Healthcare dashboard',
         aspectRatio: 'landscape'
       }
@@ -51,14 +51,14 @@ export const projects: Project[] = [
     category: 'resume-builder',
     year: '2026',
     slug: 'resume-builder-analyzer-website',
-    coverImage: 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?auto=format&fit=crop&w=1400&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?auto=format&fit=crop&w=2000&q=85',
     description: 'Advanced resume creation tool with AI-powered analysis, professional templates, skill matching, and real-time suggestions to improve your job prospects.',
     client: 'Career Advance Inc',
     location: 'Remote',
     images: [
       {
         id: '3-1',
-        src: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80',
+        src: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=2000&q=85',
         alt: 'Resume editor interface',
         aspectRatio: 'landscape'
       }
@@ -70,14 +70,14 @@ export const projects: Project[] = [
     category: 'gym-guide',
     year: '2026',
     slug: 'gym-guide-website',
-    coverImage: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=85',
     description: 'Complete fitness solution providing personalized workout plans, live class scheduling, trainer connections, and progress tracking for gym enthusiasts.',
     client: 'FitLife Network',
     location: 'National',
     images: [
       {
         id: '4-1',
-        src: 'https://images.unsplash.com/photo-1517836357463-d25ddfcbf042?auto=format&fit=crop&w=1200&q=80',
+        src: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=2000&q=85',
         alt: 'Fitness tracking dashboard',
         aspectRatio: 'landscape'
       }
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     images: [
       {
         id: '5-1',
-        src: 'https://images.unsplash.com/photo-1488551557933-47db882dd6a3?auto=format&fit=crop&w=1200&q=80',
+        src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2000&q=85',
         alt: 'Farmers marketplace platform',
         aspectRatio: 'landscape'
       }

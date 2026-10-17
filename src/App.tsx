@@ -21,6 +21,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 import { Preloader } from "@/components/ui/Preloader";
+import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { useState, useEffect, useCallback } from "react";
 
 const queryClient = new QueryClient();
@@ -92,21 +93,21 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(handleComplete, 4000);
+    const timer = setTimeout(handleComplete, 3500);
     return () => clearTimeout(timer);
   }, [handleComplete]);
-
-  if (isLoading) {
-    return <Preloader onComplete={handleComplete} />;
-  }
 
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <TooltipProvider>
+            <SmoothScroll />
             <Toaster />
             <Sonner />
+            <AnimatePresence>
+              {isLoading && <Preloader key="app-preloader" onComplete={handleComplete} />}
+            </AnimatePresence>
             <BrowserRouter>
               <SkipToContent />
               <Layout>

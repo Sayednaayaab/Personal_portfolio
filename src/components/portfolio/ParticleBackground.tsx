@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion, useMotionValue, useScroll } from 'framer-motion';
-import type { RefObject } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Particle {
   x: number;
@@ -8,206 +6,119 @@ interface Particle {
   vx: number;
   vy: number;
   size: number;
-  opacity: number;
-  layer: 'back' | 'mid' | 'front';
+  baseAlpha: number;
   color: string;
 }
 
 export function ParticleBackground() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [scrollY, setScrollY] = useState(0);
-  const [rect, setRect] = useState<DOMRect | null>(null);
-  const [particles, setParticles] = useState<Particle[]>([]);
-  // Removed useScroll - using window.scrollY state for global fixed background
-  const y = useMotionValue(0);
 
-  // Animation frame loop
-  const rafRef = useRef<number>(0);
-
-const updateParticles = useCallback(() => {
-    setParticles((prev) =>
-      prev.map((p) => {
-        let { x, y, vx, vy } = p;
-        x += vx;
-        y += vy + scrollY * 0.0005; // slower for full-site
-        vx *= 0.99; // less friction for smoother
-        vy *= 0.99;
-
-        // Bounce - full viewport
-        if (rect) {
-          if (x <= p.size || x >= rect.width - p.size) vx *= -1;
-          if (y <= p.size || y >= rect.height - p.size) vy *= -1;
-        }
-
-        return { ...p, x, y, vx, vy };
-      })
-    );
-    rafRef.current = requestAnimationFrame(updateParticles);
-  }, [rect, scrollY]);
-
-  // Network draw
-  const drawNetwork = useCallback(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !rect || particles.length === 0) return;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let animationFrameId: number;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200) {
-          ctx.strokeStyle = `rgba(100, 150, 255, ${0.2 * (1 - dist / 200) * (1 - scrollY % 100 / 100)})`;
-          ctx.lineWidth = 1 + (1 - dist / 200);
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-  }, [rect, particles, scrollY]);
-
-  useEffect(() => {
-    updateParticles();
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     };
-  }, [updateParticles]);
 
-  // Draw on particles change
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => drawNetwork());
-    return () => cancelAnimationFrame(frame);
-  }, [drawNetwork]);
+    window.addEventListener('resize', handleResize);
 
-  // Resize handler
-  const updateRect = useCallback(() => {
-    setRect({
-      width: window.innerWidth,
-      height: document.documentElement.scrollHeight || window.innerHeight,
-      x: 0,
-      y: 0,
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      toJSON: () => ({})
-    } as DOMRect);
-  }, []);
+    const count = width > 768 ? 55 : 30;
+    const particles: Particle[] = [];
+    const colors = ['#3b82f6', '#06b6d4', '#6366f1', '#10b981'];
 
-  useEffect(() => {
-    updateRect();
-    window.addEventListener('resize', updateRect);
-    return () => window.removeEventListener('resize', updateRect);
-  }, [updateRect]);
-
-  // Initialize particles
-  useEffect(() => {
-    if (!rect) return;
-
-    const particleCount = window.innerWidth > 768 ? 80 : 50;
-    const layers = ['back', 'mid', 'front'] as const;
-    const newParticles: Particle[] = [];
-
-    for (let i = 0; i < particleCount; i++) {
-      const layer = layers[Math.floor(Math.random() * layers.length)] as Particle['layer'];
-      newParticles.push({
-        x: Math.random() * rect.width,
-        y: Math.random() * rect.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.4 + 0.2,
-        layer,
-        color: layer === 'front' ? 'var(--accent)' : 'var(--primary)',
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        size: Math.random() * 2 + 1,
+        baseAlpha: Math.random() * 0.35 + 0.15,
+        color: colors[Math.floor(Math.random() * colors.length)],
       });
     }
-    setParticles(newParticles);
-  }, [rect]);
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connection lines
+      const maxDistance = 140;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < maxDistance) {
+            const alpha = (1 - dist / maxDistance) * 0.15;
+            ctx.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw and update particles
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        else if (p.x > width) p.x = 0;
+
+        if (p.y < 0) p.y = height;
+        else if (p.y > height) p.y = 0;
+
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.baseAlpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    animationFrameId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
-    <div 
-      className="fixed inset-0 overflow-hidden pointer-events-none"
-      aria-hidden="true"
-    >
-      {/* Parallax Particles - using transform for perf */}
-{particles.map((p, i) => (
-        <div
-          key={i}
-          className={`absolute rounded-full pointer-events-none parallax-layer-${p.layer} glow animation-float`}
-          style={{
-            left: `${p.x}px`,
-            top: `${p.y}px`,
-            width: p.size,
-            height: p.size,
-            background: p.color,
-            opacity: p.opacity,
-            transform: `translateY(${scrollY * (p.layer === 'back' ? 0.02 : p.layer === 'mid' ? 0.01 : 0.005)}px)`,
-          }}
-        />
-      ))}
-
-      {/* Network Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="network-canvas"
-        style={{ display: rect ? 'block' : 'none' }}
-      />
-
-      {/* Back Orb */}
-      <motion.div
-        className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full blur-[100px] parallax-layer-back"
-        style={{ background: 'var(--primary)', opacity: 0.15 }}
-        animate={{ 
-          y: [-50, 0, 50],
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ 
-          y: { duration: 12, repeat: Infinity, ease: 'easeInOut' },
-          scale: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
-          opacity: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+    <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10" aria-hidden="true">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      {/* Subtle ambient lighting orbs with GPU transform */}
+      <div
+        className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-20 dark:opacity-30 animate-pulse"
+        style={{
+          background: 'radial-gradient(circle, rgba(59,130,246,0.6) 0%, transparent 70%)',
+          animationDuration: '8s',
         }}
       />
-      {/* Front Orb */}
-      <motion.div
-        className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full blur-[100px] parallax-layer-front"
-        style={{ background: 'var(--accent)', opacity: 0.12 }}
-        animate={{ 
-          y: [50, 0, -50],
-          scale: [1.2, 1, 1.2],
-          opacity: [0.2, 0.4, 0.2],
+      <div
+        className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-15 dark:opacity-25 animate-pulse"
+        style={{
+          background: 'radial-gradient(circle, rgba(6,182,212,0.6) 0%, transparent 70%)',
+          animationDuration: '10s',
         }}
-        transition={{ 
-          y: { duration: 15, repeat: Infinity, ease: 'easeInOut' },
-          scale: { duration: 10, repeat: Infinity, ease: 'easeInOut' },
-          opacity: { duration: 10, repeat: Infinity, ease: 'easeInOut' },
-        }}
-      />
-      <motion.div
-        animate={{ 
-          scale: [1.2, 1, 1.2],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{ 
-          repeat: Infinity, 
-          duration: 10,
-          ease: 'easeInOut',
-        }}
-        className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full blur-[100px]"
-        style={{ background: 'var(--accent)', opacity: 0.12 }}
       />
     </div>
   );

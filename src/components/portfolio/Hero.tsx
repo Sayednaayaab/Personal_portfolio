@@ -1,11 +1,12 @@
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, Download, ArrowRight, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { developerInfo } from '@/data/developer';
 import { TypewriterEffect } from './TypewriterEffect';
-import { ParticleBackground } from './ParticleBackground';
-import { TechStackIcons } from './TechStackIcons';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { MagneticButton } from '@/components/ui/MagneticButton';
+import { HeroPortal3D } from './HeroPortal3D';
+import { scrollToId } from '@/lib/smoothScroll';
 
 const socialLinks = [
   { icon: Github, href: developerInfo.socialLinks.github, label: 'GitHub' },
@@ -15,182 +16,212 @@ const socialLinks = [
 ];
 
 export function Hero() {
-  const scrollToProjects = () => {
-    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+  const containerRef = useRef<HTMLElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!containerRef.current) return;
+    const { left, top } = containerRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - left);
+    mouseY.set(e.clientY - top);
   };
 
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const scrollToProjects = () => scrollToId('projects');
+
+  const scrollToContact = () => scrollToId('contact');
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Removed duplicate - global from Layout */}
-      
-      {/* Gradient Overlay removed - transparent for global parallax visibility */}
-      
+    <section
+      id="home"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative min-h-[92vh] lg:min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 md:py-28"
+    >
+      {/* Ambient background mesh lighting */}
+      <div
+        className="pointer-events-none absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full blur-[150px] opacity-20 dark:opacity-25"
+        style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)' }}
+      />
+      <div
+        className="pointer-events-none absolute top-1/2 -right-40 w-[550px] h-[550px] rounded-full blur-[150px] opacity-15 dark:opacity-20"
+        style={{ background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)' }}
+      />
 
+      {/* Interactive cursor spotlight */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 opacity-0 sm:opacity-100 transition-opacity duration-300"
+        style={{
+          background: useTransform(
+            [mouseX, mouseY],
+            ([x, y]) =>
+              `radial-gradient(750px circle at ${x}px ${y}px, rgba(59, 130, 246, 0.08), transparent 75%)`
+          ),
+        }}
+      />
 
-      {/* Content */}
-      <div className="relative z-10 container-custom text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="space-y-8"
-        >
-          {/* Status Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-            </span>
-            <span className="text-sm font-medium text-primary">Available for new projects</span>
-          </motion.div>
-
-          {/* Name & Title */}
-          <div className="space-y-6 md:space-y-8">
-            {/* Hero Profile Photo */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="mx-auto mb-8 flex justify-center"
-            >
-              <div className="relative group">
-                <Avatar className="w-36 h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 ring-4 ring-background/50 shadow-2xl shadow-primary/20 hover:shadow-primary/40 hover:scale-[1.05] transition-all duration-500 rounded-full border-4 border-primary/10 group-hover:border-primary/30">
-                  <AvatarImage src={developerInfo.profileImage} className="object-cover rounded-full" />
-                  <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-primary to-secondary text-primary">SM</AvatarFallback>
-                </Avatar>
-              </div>
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight"
-            >
-              <span className="gradient-text">{developerInfo.name}</span>
-            </motion.h1>
-            
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-xl sm:text-2xl md:text-3xl font-light text-muted-foreground"
-            >
-              {developerInfo.title} | {developerInfo.tagline}
-            </motion.p>
-          </div>
-
-          {/* Typewriter Skills */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="h-8"
-          >
-            <TypewriterEffect
-              words={['React.js', 'Python', 'JavaScript','Express.js', 'Tailwind', 'Android dev', '']}
-              className="text-lg md:text-xl font-mono text-accent"
-            />
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
-          >
-            <Button 
-              size="lg" 
-              onClick={scrollToProjects}
-              className="group px-8 py-6 text-lg rounded-xl gradient-animated hover:scale-105 transition-transform"
-            >
-              View Projects
-              <ArrowRight className="ml-2 size-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={scrollToContact}
-              className="px-8 py-6 text-lg rounded-xl border-2 hover:bg-primary/5 hover:border-primary transition-all"
-            >
-              Hire Me
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="ghost"
-              asChild
-              className="px-8 py-6 text-lg rounded-xl hover:bg-secondary"
-            >
-              <a href={developerInfo.resumeUrl} download>
-                <Download className="mr-2 size-5" />
-                Resume
-              </a>
-            </Button>
-          </motion.div>
-
-          {/* Social Links */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9, duration: 0.6 }}
-            className="flex items-center justify-center gap-4 pt-4"
-          >
-            {socialLinks.map((link, index) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 + index * 0.1 }}
-                className="p-3 rounded-full bg-secondary/50 hover:bg-primary hover:text-primary-foreground transition-all hover:scale-110"
-                aria-label={link.label}
-              >
-                <link.icon className="size-5" />
-              </motion.a>
-            ))}
-          </motion.div>
-
-          {/* Tech Stack Icons */}
+      <div className="container-custom relative z-10">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Left Column: Hero Content & Typography (Span 7) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-            className="pt-12"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-7 space-y-7 text-center lg:text-left"
           >
-            <TechStackIcons progress={100} />
+            {/* Status Pill */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.15, duration: 0.5 }}
+              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-secondary/80 border border-border/80 backdrop-blur-md shadow-sm"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-xs font-medium text-foreground/90">
+                Available for Full-Time & Freelance Projects
+              </span>
+            </motion.div>
+
+            {/* Main Headline */}
+            <div className="space-y-3">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25, duration: 0.6 }}
+                className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.08]"
+              >
+                Engineering <br className="hidden sm:inline" />
+                <span className="gradient-text">Scalable Solutions</span> & <br />
+                Interactive Experiences.
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, duration: 0.6 }}
+                className="text-lg sm:text-xl text-muted-foreground font-light max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              >
+                I'm <strong className="text-foreground font-semibold">{developerInfo.name}</strong>, a full-stack engineer and mobile developer crafting high-performance digital products with modern technologies.
+              </motion.p>
+            </div>
+
+            {/* Typewriter Skill Carousel */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.45, duration: 0.6 }}
+              className="h-8 flex items-center justify-center lg:justify-start gap-2.5"
+            >
+              <span className="text-muted-foreground font-mono text-xs uppercase tracking-wider">Tech Focus:</span>
+              <TypewriterEffect
+                words={[
+                  'React.js & Next.js',
+                  'TypeScript Architecture',
+                  'Node.js & Express',
+                  'Python & Odoo Backend',
+                  'Android & Kotlin',
+                  'Tailwind CSS',
+                ]}
+                className="text-sm sm:text-base font-mono text-accent font-semibold"
+              />
+            </motion.div>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55, duration: 0.6 }}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2"
+            >
+              <MagneticButton strength={20}>
+                <Button
+                  size="lg"
+                  onClick={scrollToProjects}
+                  className="group px-7 py-6 text-sm sm:text-base rounded-xl font-semibold shadow-[0_0_25px_rgba(59,130,246,0.3)] hover:shadow-[0_0_35px_rgba(59,130,246,0.5)] transition-all cursor-pointer"
+                >
+                  Explore My Work
+                  <ArrowRight className="ml-2 size-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </MagneticButton>
+
+              <MagneticButton strength={20}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={scrollToContact}
+                  className="px-7 py-6 text-sm sm:text-base rounded-xl border-border/80 hover:bg-secondary/70 backdrop-blur-sm transition-all cursor-pointer"
+                >
+                  Contact Me
+                </Button>
+              </MagneticButton>
+
+              <MagneticButton strength={15}>
+                <Button
+                  size="lg"
+                  variant="ghost"
+                  asChild
+                  className="px-5 py-6 text-sm sm:text-base rounded-xl hover:bg-secondary/50 text-muted-foreground hover:text-foreground cursor-pointer"
+                >
+                  <a href={developerInfo.resumeUrl} download="Sayed_Mirchoni_Resume.pdf">
+                    <Download className="mr-2 size-4" />
+                    Resume
+                  </a>
+                </Button>
+              </MagneticButton>
+            </motion.div>
+
+            {/* Social Links */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.65, duration: 0.6 }}
+              className="flex items-center justify-center lg:justify-start gap-3 pt-2"
+            >
+              {socialLinks.map((link) => (
+                <MagneticButton key={link.label} strength={12}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-full bg-secondary/70 hover:bg-primary hover:text-primary-foreground transition-all duration-300 inline-flex items-center justify-center border border-border/50 hover:border-transparent hover:shadow-[0_0_15px_rgba(59,130,246,0.35)]"
+                    aria-label={link.label}
+                  >
+                    <link.icon className="size-4" />
+                  </a>
+                </MagneticButton>
+              ))}
+            </motion.div>
           </motion.div>
-        </motion.div>
+
+          {/* Right Column: 3D Holographic Picture Showcase (Span 5) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-5 relative flex items-center justify-center"
+          >
+            <HeroPortal3D />
+          </motion.div>
+        </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Down Scroll Button */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        transition={{ delay: 1.1, duration: 0.6 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block"
       >
-        <motion.button
-          onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-          className="p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Scroll down"
+        <button
+          onClick={() => scrollToId('about')}
+          className="p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer animate-bounce"
+          aria-label="Scroll down to about"
         >
-          <ChevronDown className="size-6" />
-        </motion.button>
+          <ChevronDown className="size-5" />
+        </button>
       </motion.div>
     </section>
   );

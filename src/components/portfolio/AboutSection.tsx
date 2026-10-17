@@ -1,102 +1,203 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
-import { Download, MapPin, Calendar, Coffee, Code } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
+import { Download, MapPin, GraduationCap, Code2, Sparkles, Coffee, Clock, CheckCircle2, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { developerInfo } from '@/data/developer';
 
 export function AboutSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [currentTime, setCurrentTime] = useState('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(
+        now.toLocaleTimeString('en-US', {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        })
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section id="about" className="section-padding bg-secondary/30" ref={ref}>
+    <section id="about" className="section-padding relative overflow-hidden" ref={ref}>
       <div className="container-custom">
+        {/* Section Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-16 space-y-4"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">About Me</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Passionate about creating elegant solutions to complex problems
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
+            Overview
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+            About <span className="gradient-text">Me</span>
+          </h2>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            Passionate full-stack & mobile developer dedicated to writing clean code and crafting impactful digital experiences.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Bio */}
+        {/* Modern Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {/* Tile 1: Biography & Core Narrative (Col Span 2) */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="md:col-span-2 lg:col-span-2 rounded-3xl p-8 bg-card border border-border/80 shadow-md flex flex-col justify-between space-y-6 relative overflow-hidden group hover:border-primary/50 transition-all duration-300"
           >
-            <div className="prose prose-lg dark:prose-invert">
-              {developerInfo.biography.split('\n\n').map((paragraph, i) => (
-                <p key={i} className="text-muted-foreground leading-relaxed">{paragraph}</p>
-              ))}
-            </div>
-            
-            <div className="flex flex-wrap gap-4 pt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="size-4 text-primary" />
-                {developerInfo.location}
+            <div className="space-y-4 relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-xs font-mono font-medium text-primary">
+                <Terminal className="size-3.5" />
+                Developer Story
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar className="size-4 text-primary" />
-                {developerInfo.yearsOfExperience}+ years experience
-              </div>
+              <h3 className="text-2xl font-bold tracking-tight">
+                Architecting scalable web solutions and intuitive mobile experiences.
+              </h3>
+              <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                I'm a Computer Science student and full-stack software engineer based in Bangalore. With hands-on experience across modern React, Node.js, and Android development, I focus on turning complex challenges into high-performance, user-friendly digital products.
+              </p>
+              <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                When I'm not developing, I study cutting-edge AI workflows, explore RAG systems, and continuously expand my software engineering foundations.
+              </p>
             </div>
 
-            <Button asChild size="lg" className="mt-6">
-              <a href={developerInfo.resumeUrl} download>
-                <Download className="mr-2 size-4" />
-                Download Resume
-              </a>
-            </Button>
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border/60 relative z-10">
+              <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                <MapPin className="size-4 text-primary" />
+                <span>{developerInfo.location}</span>
+              </div>
+              <Button asChild size="sm" className="rounded-xl">
+                <a href={developerInfo.resumeUrl} download="Sayed_Mirchoni_Resume.pdf">
+                  <Download className="mr-2 size-4" />
+                  Download Resume
+                </a>
+              </Button>
+            </div>
           </motion.div>
 
-          {/* Stats & Fun Facts */}
+          {/* Tile 2: Live Local Time & Availability */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="rounded-3xl p-6 bg-card border border-border/80 shadow-md flex flex-col justify-between space-y-4 group hover:border-accent/50 transition-all duration-300"
           >
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Projects Completed', value: `${developerInfo.projectsCompleted}+`, icon: Code },
-                { label: 'Lines of Code', value: '500K+', icon: Code },
-              ].map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.5 + i * 0.1 }}
-                  className="p-6 rounded-2xl bg-card border border-border text-center card-hover"
-                >
-                  <div className="text-3xl font-bold gradient-text mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </motion.div>
-              ))}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                  Local Time (IST)
+                </span>
+                <Clock className="size-4 text-accent" />
+              </div>
+              <div className="text-3xl font-extrabold tracking-tight font-mono text-foreground">
+                {currentTime || '12:00:00 PM'}
+              </div>
+              <p className="text-xs text-muted-foreground">Bangalore, India (UTC+5:30)</p>
             </div>
 
-            {/* Fun Facts */}
-            <div className="p-6 rounded-2xl bg-card border border-border">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Coffee className="size-5 text-accent" />
-                Fun Facts
-              </h3>
-              <ul className="space-y-2">
-                {developerInfo.funFacts.map((fact, i) => (
-                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                    <span className="text-primary">▸</span>
-                    {fact}
-                  </li>
-                ))}
-              </ul>
+            <div className="p-4 rounded-2xl bg-secondary/60 border border-border/50 space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-xs font-semibold text-emerald-500">Available to Hire</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Open to full-stack, frontend, or mobile engineering roles.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Tile 3: Stats Matrix */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="rounded-3xl p-6 bg-card border border-border/80 shadow-md flex flex-col justify-between space-y-4 group hover:border-primary/50 transition-all duration-300"
+          >
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                <Code2 className="size-4 text-primary" />
+                Engineering Metrics
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
+                <div className="text-2xl font-bold gradient-text">{developerInfo.projectsCompleted}+</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Projects Built</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
+                <div className="text-2xl font-bold text-accent">500K+</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Lines of Code</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
+                <div className="text-2xl font-bold text-emerald-500">{developerInfo.happyClients}+</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Clients Served</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
+                <div className="text-2xl font-bold text-primary">100%</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Commitment</div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Tile 4: Education & Foundation (Col Span 2) */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="md:col-span-2 lg:col-span-2 rounded-3xl p-6 md:p-8 bg-card border border-border/80 shadow-md space-y-4 group hover:border-primary/50 transition-all duration-300"
+          >
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider">
+              <GraduationCap className="size-4 text-primary" />
+              Academic Background
+            </div>
+            {developerInfo.education.map((edu, idx) => (
+              <div key={idx} className="space-y-1.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h4 className="text-lg font-bold">{edu.degree}</h4>
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary font-mono font-medium">
+                    Class of {edu.year}
+                  </span>
+                </div>
+                <p className="text-sm text-foreground/80 font-medium">{edu.school}</p>
+                <p className="text-xs text-muted-foreground">Focus Area: {edu.focus}</p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Tile 5: Fun Facts & Mindset (Col Span 2) */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="md:col-span-2 lg:col-span-2 rounded-3xl p-6 md:p-8 bg-card border border-border/80 shadow-md space-y-4 group hover:border-accent/50 transition-all duration-300"
+          >
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider">
+              <Coffee className="size-4 text-accent" />
+              Quick Facts & Mindset
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3 pt-1">
+              {developerInfo.funFacts.map((fact, i) => (
+                <div key={i} className="flex items-start gap-2.5 text-xs md:text-sm text-muted-foreground">
+                  <CheckCircle2 className="size-4 text-primary flex-shrink-0 mt-0.5" />
+                  <span>{fact}</span>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>

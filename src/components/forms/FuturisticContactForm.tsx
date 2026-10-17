@@ -58,8 +58,10 @@ export function FuturisticContactForm() {
         body: JSON.stringify(data),
       });
 
-      const result = await response.json();
-      setServerResponse(result.message || result.error || 'Unknown error');
+      const result = await response.json().catch(() => ({}));
+      setServerResponse(
+        result.message || (response.ok ? 'Message sent!' : `Server error (${response.status}). Please try again later.`)
+      );
 
       if (response.ok) {
         setIsSuccess(true);
@@ -67,7 +69,7 @@ export function FuturisticContactForm() {
         setTimeout(() => setIsSuccess(false), 8000);
       }
     } catch (error) {
-      setServerResponse('Network error. Please check backend server.');
+      setServerResponse('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
