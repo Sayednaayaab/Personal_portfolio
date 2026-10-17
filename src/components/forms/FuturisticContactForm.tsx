@@ -33,7 +33,7 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 export function FuturisticContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [serverResponse, setServerResponse] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -47,7 +47,7 @@ export function FuturisticContactForm() {
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-    setServerResponse('');
+    setErrorMessage('');
 
     try {
       const response = await fetch('/api/contact', {
@@ -59,17 +59,16 @@ export function FuturisticContactForm() {
       });
 
       const result = await response.json().catch(() => ({}));
-      setServerResponse(
-        result.message || (response.ok ? 'Message sent!' : `Server error (${response.status}). Please try again later.`)
-      );
 
       if (response.ok) {
         setIsSuccess(true);
         form.reset();
         setTimeout(() => setIsSuccess(false), 8000);
+      } else {
+        setErrorMessage(result.message || `Server error (${response.status}). Please try again later.`);
       }
     } catch (error) {
-      setServerResponse('Network error. Please check your connection and try again.');
+      setErrorMessage('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -117,9 +116,6 @@ export function FuturisticContactForm() {
           <Sparkles className="size-6 text-blue-300 animate-pulse delay-100" />
           <Sparkles className="size-8 text-emerald-300 animate-bounce delay-200" />
         </div>
-        <p className="text-emerald-200/70 text-sm font-mono">
-          Server: {serverResponse}
-        </p>
       </motion.div>
     );
   }
@@ -202,14 +198,14 @@ export function FuturisticContactForm() {
               </FormItem>
             )}
           />
-          {serverResponse && !isSuccess && (
+          {errorMessage && (
             <motion.div 
               className="p-4 rounded-2xl bg-destructive/10 border-2 border-destructive/30 text-destructive font-medium backdrop-blur-xl"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
             >
               <AlertCircle className="inline-block mr-2 size-5" />
-              {serverResponse}
+              {errorMessage}
             </motion.div>
           )}
           <motion.div className="pt-4">

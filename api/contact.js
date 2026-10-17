@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { buildContactEmail } from './_emailTemplate.js';
 
 // Vercel serverless function: POST /api/contact
 // Required environment variables (set in Vercel → Project → Settings → Environment Variables):
@@ -21,15 +22,6 @@ function isRateLimited(ip) {
   recent.push(now);
   hits.set(ip, recent);
   return false;
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
 }
 
 function validate({ name, email, subject, message }) {
@@ -72,20 +64,14 @@ export default async function handler(req, res) {
   });
 
   try {
+    const { html, text } = buildContactEmail({ name, email, subject, message });
     await transporter.sendMail({
       from: `"Portfolio Contact" <${user}>`,
       to: process.env.RECIPIENT_EMAIL || user,
-      replyTo: email,
-      subject: `Portfolio: ${subject.trim()}`,
-      text: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
-      html: `
-        <h3>New message from your portfolio</h3>
-        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-        <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
-        <p><strong>Message:</strong></p>
-        <div style="white-space: pre-line;">${escapeHtml(message)}</div>
-      `,
+      replyTo: { name: name.trim(), address: email.trim() },
+      subject: `New message: ${subject.trim()}`,
+      text,
+      html,
     });
     return res.status(200).json({ message: 'Message sent successfully!' });
   } catch (error) {
