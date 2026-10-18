@@ -92,22 +92,24 @@ export const skills = {
     { name: "Node.js", level: 85, icon: "nodejs" },
     { name: "Flask", level: 85, icon: "flask" },
     { name: "Django", level: 90, icon: "django" },
+    { name: "FastAPI", level: 80, icon: "fastapi" },
+    { name: "Firebase", level: 80, icon: "firebase" },
   ],
   mobile: [
-    { name: "Android Development", level: 90, icon: "android" },
     { name: "Java", level: 85, icon: "java" },
     { name: "Kotlin", level: 80, icon: "kotlin" },
     { name: "React Native", level: 80, icon: "react-native" },
     { name: "Flutter", level: 95, icon: "flutter" },
+    { name: "Dart", level: 85, icon: "dart" },
   ],
   tools: [
-    { name: "Github", level: 92 },
-    { name: "Android Studio", level: 95 },
+    { name: "GitHub", level: 92 },
     { name: "Figma", level: 70 },
-    { name: "N8N", level: 80 },
-    { name: "LLM", level: 85 },
-    { name: "RAGs", level: 80 },
+    { name: "n8n", level: 80 },
+    { name: "LLMs", level: 85 },
+    { name: "RAG", level: 80 },
     { name: "Vercel", level: 88 },
+    { name: "Traccar", level: 75 },
   ],
 };
 
@@ -210,7 +212,7 @@ export const services: ServiceItem[] = [
       "Error Handling & Fallback Notification Alerts",
       "Self-Hosted N8N Deployment & Maintenance"
     ],
-    techStack: ["N8N", "Webhooks", "REST APIs", "Node.js", "Docker", "Cloud Cron"]
+    techStack: ["n8n", "Webhooks", "REST APIs", "Node.js", "Docker", "Cloud Cron"]
   },
   {
     title: "Vercel Deployment",
