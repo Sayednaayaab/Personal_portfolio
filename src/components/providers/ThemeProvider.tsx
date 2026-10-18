@@ -10,15 +10,16 @@ interface ThemeProviderProps {
 }
 
 /**
- * Theme Provider component wrapping next-themes
- * Provides dark mode support with system preference detection
+ * Theme Provider component wrapping next-themes.
+ * The site is dark-only: the theme is forced to "dark" regardless of system preference.
  */
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system"
-      enableSystem
+      defaultTheme="dark"
+      forcedTheme="dark"
+      enableSystem={false}
       disableTransitionOnChange
       {...props}
     >

@@ -2,7 +2,9 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { Download, MapPin, GraduationCap, Code2, Sparkles, Coffee, Clock, CheckCircle2, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { developerInfo } from '@/data/developer';
+import { developerInfo, projects } from '@/data/developer';
+
+const companyProjectCount = projects.filter((p) => p.professional).length;
 
 export function AboutSection() {
   const ref = useRef(null);
@@ -141,16 +143,16 @@ export function AboutSection() {
                 <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Projects Built</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
-                <div className="text-2xl font-bold text-accent">500K+</div>
-                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Lines of Code</div>
+                <div className="text-2xl font-bold text-accent">{companyProjectCount}</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Company Projects</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
                 <div className="text-2xl font-bold text-emerald-500">{developerInfo.happyClients}+</div>
                 <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Clients Served</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
-                <div className="text-2xl font-bold text-primary">100%</div>
-                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Commitment</div>
+                <div className="text-2xl font-bold text-primary">{developerInfo.yearsOfExperience}+</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Years Experience</div>
               </div>
             </div>
           </motion.div>

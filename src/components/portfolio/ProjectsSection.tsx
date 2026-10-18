@@ -1,13 +1,15 @@
 import { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { projects } from '@/data/developer';
+import { projects, type Project } from '@/data/developer';
 import { ProjectCard3D } from './ProjectCard3D';
+import { ProjectDetailsDialog } from './ProjectDetailsDialog';
 import { cn } from '@/lib/utils';
 
 const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)))];
 
 export function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -75,11 +77,13 @@ export function ProjectsSection() {
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
-              <ProjectCard3D key={project.id} project={project} index={index} />
+              <ProjectCard3D key={project.id} project={project} index={index} onOpen={setSelectedProject} />
             ))}
           </AnimatePresence>
         </motion.div>
       </div>
+
+      <ProjectDetailsDialog project={selectedProject} onClose={() => setSelectedProject(null)} />
     </section>
   );
 }

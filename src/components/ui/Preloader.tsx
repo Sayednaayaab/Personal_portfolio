@@ -1,11 +1,18 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, animate, useMotionTemplate, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import { Terminal, Sparkles, Code2, Cpu } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
 
 interface PreloaderProps {
+  /** Called when the reveal begins, so the site can mount and animate in underneath */
+  onRevealStart: () => void;
+  /** Called when the reveal has finished and the preloader can unmount */
   onComplete: () => void;
 }
+
+type Phase = 'loading' | 'finishing' | 'reveal';
+
+const EASE_PORTAL = [0.76, 0, 0.24, 1] as const;
 
 const bootLogs = [
   'INITIALIZING SYSTEM CORE...',
@@ -15,9 +22,44 @@ const bootLogs = [
   'EXPERIENCE READY.',
 ];
 
-export function Preloader({ onComplete }: PreloaderProps) {
+export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(1);
   const [logIndex, setLogIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>('loading');
+  const reduceMotion = useReducedMotion();
+
+  // Radius (px) of the transparent "portal" hole that reveals the site
+  const hole = useMotionValue(0);
+  const maskImage = useMotionTemplate`radial-gradient(circle at 50% 50%, transparent ${hole}px, black calc(${hole}px + 1.5px))`;
+  const ringSize = useTransform(hole, (r) => r * 2);
+  const ringOpacity = useTransform(hole, [0, 80, 900, 1400], [0, 1, 0.6, 0]);
+
+  // Keep the latest callbacks without restarting the progress timer
+  const callbacks = useRef({ onRevealStart, onComplete });
+  callbacks.current = { onRevealStart, onComplete };
+
+  // 100% → content gathers (finishing) → portal opens (reveal) → unmount
+  useEffect(() => {
+    if (phase !== 'finishing') return;
+    const timer = setTimeout(() => setPhase('reveal'), reduceMotion ? 0 : 380);
+    return () => clearTimeout(timer);
+  }, [phase, reduceMotion]);
+
+  useEffect(() => {
+    if (phase !== 'reveal') return;
+    callbacks.current.onRevealStart();
+    if (reduceMotion) {
+      callbacks.current.onComplete();
+      return;
+    }
+    const maxRadius = Math.hypot(window.innerWidth, window.innerHeight) / 2 + 40;
+    const controls = animate(hole, maxRadius, {
+      duration: 1.05,
+      ease: EASE_PORTAL,
+      onComplete: () => callbacks.current.onComplete(),
+    });
+    return () => controls.stop();
+  }, [phase, hole, reduceMotion]);
 
   useEffect(() => {
     const TOTAL_DURATION_MS = 3000; // 3 seconds total
@@ -34,14 +76,14 @@ export function Preloader({ onComplete }: PreloaderProps) {
       if (progressFraction < 1) {
         rafId = requestAnimationFrame(tick);
       } else {
-        setTimeout(onComplete, 250);
+        setPhase('finishing');
       }
     };
 
     rafId = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafId);
-  }, [onComplete]);
+  }, []);
 
   // Update telemetry log based on current progress percentage
   useEffect(() => {
@@ -53,15 +95,13 @@ export function Preloader({ onComplete }: PreloaderProps) {
   }, [progress]);
 
   return (
+    <>
     <motion.div
       className="fixed inset-0 z-[9999] bg-[#07090e] text-foreground flex flex-col items-center justify-center p-6 select-none overflow-hidden"
       initial={{ opacity: 1 }}
-      exit={{
-        opacity: 0,
-        scale: 1.05,
-        filter: 'blur(16px)',
-        transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] },
-      }}
+      exit={{ opacity: 0, transition: { duration: reduceMotion ? 0.3 : 0.15 } }}
+      style={phase === 'reveal' && !reduceMotion ? { maskImage, WebkitMaskImage: maskImage } : undefined}
+      aria-hidden={phase === 'reveal'}
     >
       {/* Ambient background mesh glow */}
       <div
@@ -87,8 +127,12 @@ export function Preloader({ onComplete }: PreloaderProps) {
         }}
       />
 
-      {/* Centerpiece Content */}
-      <div className="relative z-10 flex flex-col items-center max-w-md w-full text-center space-y-8">
+      {/* Centerpiece Content: gathers inward and fades once loading hits 100% */}
+      <motion.div
+        className="relative z-10 flex flex-col items-center max-w-md w-full text-center space-y-8"
+        animate={phase === 'loading' ? { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, scale: 0.92, y: -8, filter: 'blur(6px)' }}
+        transition={{ duration: 0.4, ease: EASE_PORTAL }}
+      >
         {/* Animated Brand Monogram Orb */}
         <div className="relative flex items-center justify-center">
           {/* Outer rotating neon ring */}
@@ -138,8 +182,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
               <Terminal className="size-3 animate-pulse" />
               <span>SYS_BOOT</span>
             </span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-foreground font-mono">
-              {progress < 10 ? `00${progress}` : progress < 100 ? `0${progress}` : progress}
+            <span className="text-2xl sm:text-3xl font-extrabold text-foreground font-mono tabular-nums">
+              <span className="inline-block min-w-[3ch] text-right">{progress}</span>
               <span className="text-xs text-primary font-normal ml-0.5">%</span>
             </span>
           </div>
@@ -170,7 +214,17 @@ export function Preloader({ onComplete }: PreloaderProps) {
             </AnimatePresence>
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
+
+    {/* Glowing ring tracing the edge of the opening portal */}
+    {phase === 'reveal' && !reduceMotion && (
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none fixed left-1/2 top-1/2 z-[10000] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/70 shadow-[0_0_40px_6px_rgba(34,211,238,0.35),inset_0_0_30px_rgba(59,130,246,0.35)]"
+        style={{ width: ringSize, height: ringSize, opacity: ringOpacity }}
+      />
+    )}
+    </>
   );
 }

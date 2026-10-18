@@ -1,26 +1,17 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ExternalLink, Github, Sparkles } from 'lucide-react';
+import { Building2, ExternalLink, Github, Lock, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import type { Project } from '@/data/developer';
 
 interface ProjectCardProps {
-  project: {
-    id: string;
-    title: string;
-    category: string;
-    description: string;
-    image: string;
-    techStack: string[];
-    liveUrl: string;
-    githubUrl: string;
-    featured?: boolean;
-    metrics?: { label: string; value: string }[];
-  };
+  project: Project;
   index: number;
+  onOpen?: (project: Project) => void;
 }
 
-export function ProjectCard3D({ project, index }: ProjectCardProps) {
+export function ProjectCard3D({ project, index, onOpen }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
@@ -54,6 +45,22 @@ export function ProjectCard3D({ project, index }: ProjectCardProps) {
     y.set(0);
   };
 
+  const open = () => {
+    handleMouseLeave();
+    onOpen?.(project);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+    }
+  };
+
+  // Links inside the card open their URL without also opening the details dialog
+  const stopPropagation = (e: React.MouseEvent) => e.stopPropagation();
+
   return (
     <motion.div
       layout
@@ -68,12 +75,17 @@ export function ProjectCard3D({ project, index }: ProjectCardProps) {
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onClick={onOpen ? open : undefined}
+        onKeyDown={onOpen ? handleKeyDown : undefined}
+        role={onOpen ? 'button' : undefined}
+        tabIndex={onOpen ? 0 : undefined}
+        aria-label={onOpen ? `View details for ${project.title}` : undefined}
         style={{
           rotateX,
           rotateY,
           transformStyle: 'preserve-3d',
         }}
-        className="group relative h-full flex flex-col bg-card rounded-2xl border border-border/70 hover:border-primary/50 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/10"
+        className="group relative h-full flex flex-col bg-card rounded-2xl border border-border/70 hover:border-primary/50 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         {/* Cursor glare effect */}
         <motion.div
@@ -140,26 +152,42 @@ export function ProjectCard3D({ project, index }: ProjectCardProps) {
 
             {/* Links */}
             <div className="flex items-center gap-3 pt-2 border-t border-border/60">
-              <Button
-                asChild
-                size="sm"
-                className="flex-1 rounded-lg text-xs font-semibold shadow-sm hover:shadow-primary/30 transition-shadow"
-              >
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-1.5 size-3.5" />
-                  Live Demo
-                </a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="rounded-lg text-xs font-semibold border-border/80 hover:bg-secondary"
-              >
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
-                  <Github className="size-3.5" />
-                </a>
-              </Button>
+              {project.liveUrl && (
+                <Button
+                  asChild
+                  size="sm"
+                  className="flex-1 rounded-lg text-xs font-semibold shadow-sm hover:shadow-primary/30 transition-shadow"
+                >
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" onClick={stopPropagation}>
+                    <ExternalLink className="mr-1.5 size-3.5" />
+                    Live Demo
+                  </a>
+                </Button>
+              )}
+              {project.githubUrl && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg text-xs font-semibold border-border/80 hover:bg-secondary"
+                >
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository" onClick={stopPropagation}>
+                    <Github className="size-3.5" />
+                  </a>
+                </Button>
+              )}
+              {!project.liveUrl && !project.githubUrl && (
+                <div className="flex-1 h-9 flex items-center justify-between gap-2 rounded-lg border border-primary/25 bg-primary/5 px-3 text-xs font-semibold text-primary">
+                  <span className="flex items-center gap-1.5">
+                    <Building2 className="size-3.5" />
+                    {project.professional ? 'Company Project' : 'Private Project'}
+                  </span>
+                  <span className="flex items-center gap-1 font-mono text-[10px] font-normal text-muted-foreground">
+                    <Lock className="size-3" />
+                    Private
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

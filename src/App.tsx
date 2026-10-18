@@ -9,7 +9,7 @@ import { SkipToContent } from "@/components/ui/SkipToContent";
 import { LoadingFallback } from "@/components/ui/LoadingFallback";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { lazy, Suspense } from "react";
 
 // Code-split route components for better performance
@@ -87,13 +87,23 @@ function AnimatedRoutes() {
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  // Routes mount when the preloader starts revealing, so page intro animations play in view
+  const [isRevealed, setIsRevealed] = useState(false);
 
+  const handleRevealStart = useCallback(() => setIsRevealed(true), []);
   const handleComplete = useCallback(() => {
+    setIsRevealed(true);
     setIsLoading(false);
   }, []);
 
+  // Fetch the home page chunk during the splash so it's ready at reveal time
   useEffect(() => {
-    const timer = setTimeout(handleComplete, 3500);
+    import('./pages/Index');
+  }, []);
+
+  // Safety net in case the preloader never reports completion
+  useEffect(() => {
+    const timer = setTimeout(handleComplete, 6000);
     return () => clearTimeout(timer);
   }, [handleComplete]);
 
@@ -106,14 +116,24 @@ function App() {
             <Toaster />
             <Sonner />
             <AnimatePresence>
-              {isLoading && <Preloader key="app-preloader" onComplete={handleComplete} />}
+              {isLoading && <Preloader key="app-preloader" onRevealStart={handleRevealStart} onComplete={handleComplete} />}
             </AnimatePresence>
             <BrowserRouter>
               <SkipToContent />
               <Layout>
-                <Suspense fallback={<LoadingFallback />}>
-                  <AnimatedRoutes />
-                </Suspense>
+                {isRevealed && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 1.04, filter: 'blur(6px)' }}
+                    // transitionEnd clears transform/filter so fixed-position children (e.g. lightbox) work normally
+                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none', transform: 'none' } }}
+                    transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformOrigin: '50% 30vh' }}
+                  >
+                    <Suspense fallback={<LoadingFallback />}>
+                      <AnimatedRoutes />
+                    </Suspense>
+                  </motion.div>
+                )}
               </Layout>
             </BrowserRouter>
           </TooltipProvider>

@@ -5,74 +5,22 @@ import {
   Code,
   Server,
   Smartphone,
-  Cpu,
   Briefcase,
-  Sparkles,
   ArrowUpRight,
-  CheckCircle2,
-  Wrench,
-  Globe,
   Layers,
   ShoppingBag,
   Bot,
   Zap,
   Cloud,
 } from 'lucide-react';
-import { skills, services, ServiceItem } from '@/data/developer';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { services, ServiceItem } from '@/data/developer';
+import { SkillsShowcase } from './SkillsShowcase';
+import { ServiceDetailsDialog } from './ServiceDetailsDialog';
 
 export function SkillsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
-
-  const skillCategories = [
-    {
-      id: 'frontend',
-      title: 'Frontend Architecture',
-      icon: Code,
-      accentColor: 'from-blue-500 to-cyan-400',
-      description: 'Building reactive, component-driven, ultra-fast web interfaces.',
-      skills: skills.frontend,
-    },
-    {
-      id: 'backend',
-      title: 'Backend & Cloud APIs',
-      icon: Server,
-      accentColor: 'from-emerald-500 to-teal-400',
-      description: 'RESTful architectures, microservices, and database optimization.',
-      skills: skills.backend,
-    },
-    {
-      id: 'mobile',
-      title: 'Mobile Development',
-      icon: Smartphone,
-      accentColor: 'from-purple-500 to-indigo-400',
-      description: 'Native Android and cross-platform mobile application engineering.',
-      skills: skills.mobile,
-    },
-    {
-      id: 'tools',
-      title: 'AI, LLMs & Dev Tools',
-      icon: Cpu,
-      accentColor: 'from-amber-500 to-orange-400',
-      description: 'Workflow automation, RAG pipelines, and cloud deployment pipelines.',
-      skills: skills.tools,
-    },
-  ];
-
-  const getProficiencyLabel = (level?: number) => {
-    if (!level || level >= 90) return { label: 'Advanced', color: 'bg-primary/10 text-primary border-primary/30' };
-    if (level >= 80) return { label: 'Proficient', color: 'bg-accent/10 text-accent border-accent/30' };
-    return { label: 'Working', color: 'bg-secondary text-muted-foreground border-border/50' };
-  };
 
   const getServiceIcon = (iconName: string) => {
     switch (iconName) {
@@ -123,49 +71,7 @@ export function SkillsSection() {
           </p>
         </motion.div>
 
-        {/* 4 Interactive Category Matrix Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-          {skillCategories.map((cat, i) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="p-6 md:p-7 rounded-3xl bg-card border border-border/80 hover:border-primary/50 shadow-md hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col justify-between group"
-            >
-              <div className="space-y-6">
-                {/* Category Header */}
-                <div className="space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-secondary/80 border border-border/50 flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                    <cat.icon className="size-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-foreground tracking-tight">{cat.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">{cat.description}</p>
-                  </div>
-                </div>
-
-                {/* Skill Badges */}
-                <div className="flex flex-wrap gap-2 pt-2 border-t border-border/50">
-                  {cat.skills.map((skill) => {
-                    const prof = getProficiencyLabel(skill.level);
-                    return (
-                      <div
-                        key={skill.name}
-                        className="px-3 py-1.5 rounded-xl bg-secondary/60 hover:bg-secondary border border-border/60 hover:border-primary/40 transition-all flex items-center gap-2 group/item cursor-default"
-                      >
-                        <span className="text-xs font-semibold text-foreground/90">{skill.name}</span>
-                        <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded border ${prof.color}`}>
-                          {prof.label}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <SkillsShowcase />
 
         {/* Services & Solutions */}
         <motion.div
@@ -220,87 +126,12 @@ export function SkillsSection() {
       </div>
 
       {/* Detailed Service Specification Dialog */}
-      <Dialog open={!!selectedService} onOpenChange={(open) => !open && setSelectedService(null)}>
-        <DialogContent className="max-w-xl p-6 sm:p-8 rounded-3xl bg-card/95 backdrop-blur-2xl border border-border shadow-2xl">
-          {selectedService && (
-            <div className="space-y-6">
-              {/* Header */}
-              <DialogHeader className="space-y-3 text-left">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-2xl bg-accent/10 text-accent border border-accent/20">
-                    {getServiceIcon(selectedService.icon)}
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-mono uppercase text-muted-foreground tracking-wider">
-                      Service Specification
-                    </span>
-                    <DialogTitle className="text-2xl font-bold tracking-tight">
-                      {selectedService.title}
-                    </DialogTitle>
-                  </div>
-                </div>
-                <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-                  {selectedService.description}
-                </DialogDescription>
-              </DialogHeader>
-
-              {/* Full In-Depth Description */}
-              <div className="p-4 rounded-2xl bg-secondary/40 border border-border/60">
-                <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed">
-                  {selectedService.fullDescription}
-                </p>
-              </div>
-
-              {/* Key Capabilities */}
-              <div className="space-y-3">
-                <h5 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
-                  Core Architectural Deliverables
-                </h5>
-                <div className="grid gap-2">
-                  {selectedService.capabilities.map((cap) => (
-                    <div key={cap} className="flex items-start gap-2.5 text-xs text-foreground/80">
-                      <CheckCircle2 className="size-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span>{cap}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tech Stack */}
-              <div className="space-y-2.5 pt-2">
-                <h5 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
-                  Technologies Utilized
-                </h5>
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedService.techStack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-xs font-mono px-2.5 py-1 rounded-lg bg-secondary text-secondary-foreground border border-border/50"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-3 pt-4 border-t border-border/60">
-                <Button onClick={handleInquire} className="flex-1 rounded-xl cursor-pointer">
-                  <Sparkles className="mr-2 size-4" />
-                  Discuss This Project
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedService(null)}
-                  className="rounded-xl cursor-pointer"
-                >
-                  Close
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ServiceDetailsDialog
+        service={selectedService}
+        icon={selectedService ? getServiceIcon(selectedService.icon) : null}
+        onClose={() => setSelectedService(null)}
+        onInquire={handleInquire}
+      />
     </section>
   );
 }

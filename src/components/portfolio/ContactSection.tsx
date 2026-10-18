@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Mail, MapPin, Phone, Calendar, Copy, Check, MessageSquare } from 'lucide-react';
+import { Mail, MapPin, Phone, Copy, Check, Linkedin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { developerInfo } from '@/data/developer';
@@ -41,18 +41,29 @@ export function ContactSection() {
           </p>
         </motion.div>
 
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-5 gap-6 lg:gap-8 items-start">
           {/* Contact Info Card */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="p-8 rounded-3xl bg-card border border-border/80 shadow-md space-y-8"
+            className="lg:col-span-2 p-6 md:p-8 rounded-3xl bg-card/80 backdrop-blur-sm border border-border/80 shadow-md space-y-7"
           >
             <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-400">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
+                </span>
+                Available for full-time &amp; freelance
+              </div>
               <h3 className="text-2xl font-bold tracking-tight">Contact Information</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Feel free to reach out via email, phone, or connect through social media. I respond within 24 hours.
+                Reach out by email or phone, or connect on LinkedIn.
+              </p>
+              <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="size-3.5 text-primary" />
+                I respond within 24 hours
               </p>
             </div>
 
@@ -90,9 +101,9 @@ export function ContactSection() {
 
               <MagneticButton strength={15} className="flex-1">
                 <Button variant="secondary" asChild className="w-full rounded-xl cursor-pointer">
-                  <a href={`mailto:${developerInfo.email}`}>
-                    <Calendar className="mr-2 size-4" />
-                    Direct Email
+                  <a href={developerInfo.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="mr-2 size-4" />
+                    LinkedIn
                   </a>
                 </Button>
               </MagneticButton>
@@ -104,17 +115,14 @@ export function ContactSection() {
             initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="space-y-4"
+            className="lg:col-span-3 relative overflow-hidden rounded-3xl border border-border/80 bg-card/80 p-6 shadow-md backdrop-blur-sm md:p-8"
           >
-            <div className="p-1 rounded-3xl bg-gradient-to-b from-primary/30 via-border/40 to-transparent">
-              <div className="p-6 md:p-8 rounded-[23px] bg-card/90 backdrop-blur-xl border border-border/60 shadow-lg">
-                <div className="flex items-center gap-2 mb-6">
-                  <MessageSquare className="size-5 text-primary" />
-                  <h3 className="text-xl font-bold tracking-tight">Send a Direct Message</h3>
-                </div>
-                <FuturisticContactForm />
-              </div>
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
+            <div className="mb-6 space-y-1">
+              <h3 className="text-2xl font-bold tracking-tight">Send a message</h3>
+              <p className="text-sm text-muted-foreground">Fill in the form and it lands straight in my inbox.</p>
             </div>
+            <FuturisticContactForm />
           </motion.div>
         </div>
       </div>

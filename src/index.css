@@ -445,3 +445,191 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
+
+/* Skills marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee 40s linear infinite reverse;
+}
+
+.marquee-mask:hover .animate-marquee,
+.marquee-mask:hover .animate-marquee-reverse {
+  animation-play-state: paused;
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none;
+  }
+}
+
+/* ---------- Starfield background (StarfieldBackground) ---------- */
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  background-color: var(--background);
+}
+
+.starfield > * {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Light theme: soft dawn sky. Dark theme: deep space. */
+.starfield-base {
+  background:
+    radial-gradient(ellipse 120% 70% at 50% -10%, hsl(220 90% 56% / 0.08), transparent 60%),
+    var(--background);
+}
+
+.dark .starfield-base {
+  background:
+    radial-gradient(ellipse 140% 80% at 50% 120%, hsl(230 60% 12% / 0.9), transparent 60%),
+    linear-gradient(180deg, hsl(228 40% 3%) 0%, hsl(230 35% 4%) 55%, hsl(232 40% 6%) 100%);
+}
+
+.nebula {
+  inset: auto;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: 0.1;
+  will-change: transform;
+}
+
+.dark .nebula {
+  opacity: 0.18;
+}
+
+.nebula-1 {
+  width: 55vw;
+  height: 40vw;
+  top: -10%;
+  left: -10%;
+  background: radial-gradient(ellipse, hsl(225 85% 55%) 0%, transparent 70%);
+  animation: nebula-drift-1 60s ease-in-out infinite alternate;
+}
+
+.nebula-2 {
+  width: 45vw;
+  height: 35vw;
+  top: 40%;
+  right: -12%;
+  background: radial-gradient(ellipse, hsl(265 75% 55%) 0%, transparent 70%);
+  animation: nebula-drift-2 75s ease-in-out infinite alternate;
+}
+
+.nebula-3 {
+  width: 40vw;
+  height: 30vw;
+  bottom: -15%;
+  left: 25%;
+  background: radial-gradient(ellipse, hsl(185 80% 40%) 0%, transparent 70%);
+  opacity: 0.07;
+  animation: nebula-drift-3 90s ease-in-out infinite alternate;
+}
+
+.dark .nebula-3 {
+  opacity: 0.12;
+}
+
+@keyframes nebula-drift-1 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(10vw, 8vh, 0) scale(1.15); }
+}
+
+@keyframes nebula-drift-2 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-12vw, -10vh, 0) scale(1.1); }
+}
+
+@keyframes nebula-drift-3 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(8vw, -12vh, 0) scale(1.2); }
+}
+
+.starfield-vignette {
+  background: radial-gradient(ellipse at center, transparent 50%, var(--background) 100%);
+  opacity: 0.5;
+}
+
+.dark .starfield-vignette {
+  background: radial-gradient(ellipse at center, transparent 55%, hsl(228 40% 2%) 100%);
+  opacity: 0.85;
+}
+
+@media (max-width: 767px) {
+  .nebula {
+    filter: blur(80px);
+  }
+  .nebula-1 { width: 90vw; height: 70vw; }
+  .nebula-2 { width: 80vw; height: 60vw; }
+  .nebula-3 { width: 80vw; height: 60vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nebula {
+    animation: none;
+  }
+}
+
+/* Manifesto pipeline: glowing packet travelling along each connector */
+.pipeline-packet {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 10px 2px color-mix(in oklab, var(--accent) 70%, transparent);
+  opacity: 0;
+  animation: packet-vertical 2.4s ease-in-out infinite;
+}
+
+@media (min-width: 1024px) {
+  .pipeline-packet {
+    left: 0;
+    top: 50%;
+    animation-name: packet-horizontal;
+  }
+}
+
+@keyframes packet-vertical {
+  0% { top: 0; opacity: 0; }
+  15% { opacity: 1; }
+  60% { top: 100%; opacity: 1; }
+  70%, 100% { top: 100%; opacity: 0; }
+}
+
+@keyframes packet-horizontal {
+  0% { left: 0; opacity: 0; }
+  15% { opacity: 1; }
+  60% { left: 100%; opacity: 1; }
+  70%, 100% { left: 100%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-packet {
+    display: none;
+  }
+}

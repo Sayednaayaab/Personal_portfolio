@@ -3,7 +3,6 @@ import { Menu, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
-import { ThemeToggle } from './ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
@@ -153,7 +152,6 @@ export function Header() {
 
             {/* Right Actions */}
             <div className="hidden md:flex items-center gap-4">
-              <ThemeToggle />
               <Button
                 size="sm"
                 onClick={() => handleNavClick('contact')}
@@ -165,7 +163,6 @@ export function Header() {
 
             {/* Mobile Menu */}
             <div className="md:hidden flex items-center gap-2">
-              <ThemeToggle />
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="Open menu">

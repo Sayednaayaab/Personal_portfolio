@@ -8,6 +8,15 @@ export function setLenisInstance(instance: Lenis | null) {
   lenisInstance = instance;
 }
 
+/** Pause page smooth-scrolling, e.g. while a modal is open. */
+export function stopSmoothScroll() {
+  lenisInstance?.stop();
+}
+
+export function startSmoothScroll() {
+  lenisInstance?.start();
+}
+
 const HEADER_OFFSET = -70;
 
 /**

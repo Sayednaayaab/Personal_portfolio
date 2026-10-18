@@ -1,4 +1,5 @@
 import { Hero } from '@/components/portfolio/Hero';
+import { ManifestoSection } from '@/components/portfolio/ManifestoSection';
 import { AboutSection } from '@/components/portfolio/AboutSection';
 import { ProjectsSection } from '@/components/portfolio/ProjectsSection';
 import { SkillsSection } from '@/components/portfolio/SkillsSection';
@@ -16,6 +17,7 @@ export default function Home() {
       />
       <div className="min-h-screen">
         <Hero />
+        <ManifestoSection />
         <AboutSection />
         <ProjectsSection />
         <SkillsSection />

@@ -145,7 +145,7 @@ export function HeroPortal3D() {
           </div>
           <div className="text-left">
             <p className="text-[10px] font-mono text-muted-foreground uppercase leading-none">Specialty</p>
-            <p className="text-xs font-bold text-foreground leading-tight">React & Node.js</p>
+            <p className="text-xs font-bold text-foreground leading-tight">React & Flutter</p>
           </div>
         </motion.div>
 

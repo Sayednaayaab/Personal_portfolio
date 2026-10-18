@@ -45,6 +45,12 @@ export default async function handler(req, res) {
   }
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
+
+  // Honeypot field is hidden from people; if it's filled in, it's a bot. Pretend success.
+  if (body.website) {
+    return res.status(200).json({ message: 'Message sent successfully!' });
+  }
+
   const errors = validate(body);
   if (errors.length) {
     return res.status(400).json({ message: errors[0], errors });

@@ -6,14 +6,14 @@
 export const developerInfo = {
   name: "Sayed Mirchoni",
   profileImage: '/sayed.jpg',
-  title: "Web developer",
+  title: "Full stack developer",
   tagline: "Building impactful web experiences",
   heroSubtitle: "Crafting scalable solutions with React, Node.js, Android & modern technologies",
   email: "www.naayaab2004@gmail.com",
   phone: "+91 8618238048",
-  location: "Banglore,Karnataka,India",
+  location: "Bangalore, Karnataka, India",
   timezone: "IST",
-  yearsOfExperience: 0,
+  yearsOfExperience: 1,
   projectsCompleted: 10,
   happyClients: 8,
   
@@ -24,10 +24,10 @@ I specialize in React.js for dynamic frontend experiences, Node.js for backend A
 When not coding, I research on technologies, observe what's going on in the market, and explore the latest in web and mobile development. I believe great software starts with understanding user needs and delivering clean, efficient solutions.`,
 
   funFacts: [
-    "I've written over 500,000 lines of code",
-    "My first program was a Gym mebership platform",
-    "I can picturize clearly what is said",
-    "Coffee consumption: ~2 cups per coding session",
+    "Shipped 10+ projects across web, mobile, and Odoo, from first commit to production",
+    "My first real project was a gym membership platform",
+    "I can visualize a product from a conversation and turn requirements into a clear UI before writing code",
+    "Fueled by ~2 cups of coffee per coding session",
   ],
 
   education: [
@@ -227,7 +227,82 @@ export const services: ServiceItem[] = [
   },
 ];
 
-export const projects = [
+export interface Project {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  longDescription: string;
+  image: string;
+  techStack: string[];
+  /** Omitted for private company projects */
+  liveUrl?: string;
+  /** Omitted for private company projects */
+  githubUrl?: string;
+  featured: boolean;
+  /** Built as part of company work; shown with a "Company Project" badge instead of links */
+  professional?: boolean;
+  challenges?: string[];
+  highlights?: string[];
+}
+
+export const projects: Project[] = [
+  // Professional company projects (private: no public repo or demo)
+  {
+    id: "geelo-odoo-communication",
+    title: "GeeLo — Odoo Communication App",
+    category: "Mobile App",
+    description: "Mobile messaging app that improves on Odoo's web-based communication, with a Flutter frontend integrated with the Odoo backend and Firebase push notifications.",
+    longDescription: "Developed a user-friendly mobile communication application to improve the messaging experience of Odoo's web-based communication system, which had usability limitations. Built the frontend using Flutter and integrated it with the Odoo backend. Implemented Firebase push notifications to improve message delivery awareness and user engagement.",
+    image: "https://images.unsplash.com/photo-1611746872915-64382b5c76da?auto=format&fit=crop&w=1200&q=85",
+    techStack: ["Flutter", "Dart", "Odoo", "Python", "Firebase Cloud Messaging", "JSON-RPC API"],
+    featured: true,
+    professional: true,
+    highlights: [
+      "Improved the user experience of Odoo communication on mobile",
+      "Integrated Flutter with the Odoo backend",
+      "Implemented Firebase push notifications",
+      "Built a mobile-first messaging experience",
+    ],
+  },
+  {
+    id: "airline-irrops-passenger-management",
+    title: "Airline IRROPS Passenger Management",
+    category: "Aviation",
+    description: "Passenger management system for Air India and Air India Express disruptions: scan-based data capture, centralized records, and coordination of transport, hotels and meals.",
+    longDescription: "Developed a system to help manage airline passengers during irregular operations (IRROPS), addressing the operational challenges of maintaining passenger data and coordinating essential services during disruptions for Air India and Air India Express. Implemented passenger data capture through scanning, centralized passenger records, and a management portal to coordinate transportation, hotel accommodation, and passenger meal information.",
+    image: "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?auto=format&fit=crop&w=1200&q=85",
+    techStack: ["React", "Odoo"],
+    featured: true,
+    professional: true,
+    highlights: [
+      "Passenger data capture through scanning",
+      "Centralized passenger record management",
+      "Coordination of transportation and hotel accommodation",
+      "Passenger meal tracking and operational data management",
+      "Streamlined disruption-management workflows",
+    ],
+  },
+  {
+    id: "b2b-transport-fleet-management",
+    title: "B2B Transport & Fleet Management",
+    category: "Logistics",
+    description: "B2B transport platform for airline IRROPS and corporate clients, with bulk and roster-based bookings, per-km and hourly rentals, plus agency and vendor portals.",
+    longDescription: "Developed a B2B transportation management platform for airline IRROPS operations and corporate clients. The system supports manual trip generation on client requests, bulk transportation bookings, per-kilometre and hourly vehicle rentals, and roster-based corporate transportation. Built an agency portal for managing organizations and vendor fleet records, along with a vendor portal for receiving and accepting trip requests.",
+    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1200&q=85",
+    techStack: ["React", "FastAPI", "Odoo", "Traccar"],
+    featured: true,
+    professional: true,
+    highlights: [
+      "Manual trip creation and bulk transport management",
+      "Per-kilometre and hourly vehicle rental workflows",
+      "Roster-based corporate transportation",
+      "Agency portal for organization and fleet management",
+      "Vendor portal for trip request handling and acceptance",
+    ],
+  },
+
+  // Personal & college projects
   {
     id: "vivid-commerce",
     title: "Vivid Commerce Website",
