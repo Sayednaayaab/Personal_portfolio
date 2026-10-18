@@ -80,9 +80,7 @@ export function Hero() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="text-xs font-medium text-foreground/90">
-                Available for Full-Time & Freelance Projects
-              </span>
+              <span className="text-xs font-medium text-foreground/90">{developerInfo.availability.label}</span>
             </motion.div>
 
             {/* Main Headline */}
@@ -93,9 +91,9 @@ export function Hero() {
                 transition={{ delay: 0.25, duration: 0.6 }}
                 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.08]"
               >
-                Engineering <br className="hidden sm:inline" />
-                <span className="gradient-text">Scalable Solutions</span> & <br />
-                Interactive Experiences.
+                Building <span className="gradient-text">web &amp; mobile</span> <br className="hidden sm:inline" />
+                products with React, <br className="hidden sm:inline" />
+                Flutter &amp; Odoo.
               </motion.h1>
 
               <motion.p
@@ -104,7 +102,7 @@ export function Hero() {
                 transition={{ delay: 0.35, duration: 0.6 }}
                 className="text-lg sm:text-xl text-muted-foreground font-light max-w-xl mx-auto lg:mx-0 leading-relaxed"
               >
-                I'm <strong className="text-foreground font-semibold">{developerInfo.name}</strong>, a full-stack engineer and mobile developer crafting high-performance digital products with modern technologies.
+                I'm <strong className="text-foreground font-semibold">{developerInfo.name}</strong>, a full-stack and mobile developer. I build Odoo-backed apps for aviation and logistics teams, from Flutter mobile apps to React portals.
               </motion.p>
             </div>
 
@@ -118,12 +116,12 @@ export function Hero() {
               <span className="text-muted-foreground font-mono text-xs uppercase tracking-wider">Tech Focus:</span>
               <TypewriterEffect
                 words={[
-                  'React.js & Next.js',
-                  'TypeScript Architecture',
-                  'Node.js & Express',
-                  'Python & Odoo Backend',
-                  'Android & Kotlin',
-                  'Tailwind CSS',
+                  'React & Next.js',
+                  'Flutter & Dart',
+                  'Odoo & Python',
+                  'FastAPI',
+                  'Firebase',
+                  'TypeScript',
                 ]}
                 className="text-sm sm:text-base font-mono text-accent font-semibold"
               />

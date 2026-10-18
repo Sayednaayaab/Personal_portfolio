@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent } from 'react';
+import { forwardRef, useRef, useState, type MouseEvent } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { Code, Cpu, Layers, Server, Smartphone, type LucideIcon } from 'lucide-react';
 import { skills } from '@/data/developer';
@@ -47,7 +47,11 @@ function initials(name: string) {
 }
 
 /** Skill card with a cursor-following spotlight and an animated proficiency bar. */
-function SkillCard({ skill, index, animate }: { skill: Skill; index: number; animate: boolean }) {
+// forwardRef: AnimatePresence mode="popLayout" needs a ref to measure cards as they leave
+const SkillCard = forwardRef<HTMLDivElement, { skill: Skill; index: number; animate: boolean }>(function SkillCard(
+  { skill, index, animate },
+  ref
+) {
   const cat = categoryById[skill.category];
   const brand = skillIcons[skill.name];
   const reduceMotion = useReducedMotion();
@@ -60,6 +64,7 @@ function SkillCard({ skill, index, animate }: { skill: Skill; index: number; ani
 
   return (
     <motion.div
+      ref={ref}
       layout={!reduceMotion}
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -123,7 +128,7 @@ function SkillCard({ skill, index, animate }: { skill: Skill; index: number; ani
       </div>
     </motion.div>
   );
-}
+});
 
 function MarqueeRow({ items, reverse }: { items: Skill[]; reverse?: boolean }) {
   // Duplicated so the -50% translate loops seamlessly

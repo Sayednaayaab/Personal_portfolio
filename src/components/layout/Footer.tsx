@@ -12,10 +12,10 @@ const socialLinks = [
 
 const quickLinks = [
   { name: 'Home', id: 'home' },
-  { name: 'About', id: 'about' },
   { name: 'Projects', id: 'projects' },
-  { name: 'Skills', id: 'skills' },
   { name: 'Experience', id: 'experience' },
+  { name: 'Skills', id: 'skills' },
+  { name: 'About', id: 'about' },
   { name: 'Contact', id: 'contact' },
 ];
 

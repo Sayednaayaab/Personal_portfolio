@@ -91,7 +91,7 @@
   
   /* Muted */
   --muted: hsl(220 20% 15%);
-  --muted-foreground: hsl(220 14% 60%);
+  --muted-foreground: hsl(220 14% 67%);
   
   /* Accent */
   --accent: hsl(175 80% 50%);

@@ -16,10 +16,11 @@ interface PreloaderProps {
  */
 type Phase = 'loading' | 'charge' | 'seam' | 'open';
 
-const LOADING_MS = 3000;
-const CHARGE_MS = 400;
-const SEAM_MS = 280;
-const DOORS_MS = 1000;
+// Whole sequence is ~2 seconds: 1s loading + 0.22s charge + 0.18s seam + 0.65s doors
+const LOADING_MS = 1000;
+const CHARGE_MS = 220;
+const SEAM_MS = 180;
+const DOORS_MS = 650;
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_DOORS = 'cubic-bezier(0.76, 0, 0.24, 1)';
 
@@ -93,7 +94,7 @@ function SplashScreen({ progress, logIndex, isLoading }: SplashScreenProps) {
                 ? '0 0 30px rgba(59,130,246,0.4)'
                 : '0 0 60px rgba(34,211,238,0.65), 0 0 120px rgba(59,130,246,0.45)',
             }}
-            transition={{ duration: 0.4, ease: EASE_OUT }}
+            transition={{ duration: 0.22, ease: EASE_OUT }}
             className="absolute w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-card/90 backdrop-blur-xl border border-primary/50 flex items-center justify-center"
           >
             <span className="text-xl sm:text-2xl font-black gradient-text tracking-tighter">SM</span>
@@ -152,6 +153,15 @@ function SplashScreen({ progress, logIndex, isLoading }: SplashScreenProps) {
           </div>
         </motion.div>
       </div>
+
+      <motion.p
+        className="absolute bottom-6 left-0 right-0 text-center text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground/60"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoading ? 1 : 0 }}
+        transition={{ delay: isLoading ? 0.4 : 0, duration: 0.3 }}
+      >
+        Click or press any key to skip
+      </motion.p>
     </div>
   );
 }
@@ -170,6 +180,22 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
   const callbacks = useRef({ onRevealStart, onComplete });
   callbacks.current = { onRevealStart, onComplete };
 
+  // Any click or key skips the rest of the loading bar
+  useEffect(() => {
+    if (phase !== 'loading') return;
+    const skip = () => {
+      setProgress(100);
+      setLogIndex(4);
+      setPhase('charge');
+    };
+    window.addEventListener('pointerdown', skip);
+    window.addEventListener('keydown', skip);
+    return () => {
+      window.removeEventListener('pointerdown', skip);
+      window.removeEventListener('keydown', skip);
+    };
+  }, [phase]);
+
   useEffect(() => {
     const startTime = performance.now();
     let rafId: number;
@@ -179,7 +205,7 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
       setProgress(Math.max(1, Math.min(100, Math.floor(progressFraction * 100))));
 
       if (progressFraction < 1) rafId = requestAnimationFrame(tick);
-      else setPhase('charge');
+      else setPhase((current) => (current === 'loading' ? 'charge' : current));
     };
 
     rafId = requestAnimationFrame(tick);

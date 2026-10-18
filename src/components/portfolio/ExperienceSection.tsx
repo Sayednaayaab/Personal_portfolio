@@ -49,7 +49,7 @@ export function ExperienceSection() {
                 >
                   {/* Central Node Badge */}
                   <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-background border-2 border-primary shadow-[0_0_15px_rgba(59,130,246,0.6)] flex items-center justify-center z-20">
-                    <div className="w-2.5 h-2.5 rounded-full bg-primary animate-ping opacity-75" />
+                    {exp.current && <div className="w-2.5 h-2.5 rounded-full bg-primary animate-ping opacity-75" />}
                     <div className="w-2 h-2 rounded-full bg-accent absolute" />
                   </div>
 
@@ -58,8 +58,15 @@ export function ExperienceSection() {
                     <div className="p-6 md:p-8 rounded-3xl bg-card border border-border/80 hover:border-primary/50 shadow-md hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 space-y-4 group">
                       <div className="space-y-1.5">
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary">
-                            {exp.period}
+                          <span className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary">
+                              {exp.period}
+                            </span>
+                            {exp.current && (
+                              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                Current
+                              </span>
+                            )}
                           </span>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
                             <MapPin className="size-3 text-primary" />

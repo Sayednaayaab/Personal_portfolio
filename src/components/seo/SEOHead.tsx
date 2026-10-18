@@ -34,7 +34,7 @@ export function SEOHead({
   const baseUrl = window.location.origin;
   const fullUrl = `${baseUrl}${location.pathname}`;
   // Absolute URL is required for link previews
-  const imageUrl = image ? new URL(image, baseUrl).href : `${baseUrl}${developerInfo.profileImage}`;
+  const imageUrl = new URL(image ?? '/og-image.png', baseUrl).href;
 
   useEffect(() => {
     // Update document title

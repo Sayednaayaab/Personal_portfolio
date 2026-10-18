@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Building2, ExternalLink, Github, Lock, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,11 @@ interface ProjectCardProps {
   onOpen?: (project: Project) => void;
 }
 
-export function ProjectCard3D({ project, index, onOpen }: ProjectCardProps) {
+// forwardRef: AnimatePresence mode="popLayout" needs a ref to measure cards as they leave
+export const ProjectCard3D = forwardRef<HTMLDivElement, ProjectCardProps>(function ProjectCard3D(
+  { project, index, onOpen },
+  ref
+) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
@@ -63,6 +67,7 @@ export function ProjectCard3D({ project, index, onOpen }: ProjectCardProps) {
 
   return (
     <motion.div
+      ref={ref}
       layout
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
@@ -194,4 +199,4 @@ export function ProjectCard3D({ project, index, onOpen }: ProjectCardProps) {
       </motion.div>
     </motion.div>
   );
-}
+});

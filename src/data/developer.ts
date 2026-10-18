@@ -6,22 +6,29 @@
 export const developerInfo = {
   name: "Sayed Mirchoni",
   profileImage: '/sayed.jpg',
-  title: "Full stack developer",
-  tagline: "Building impactful web experiences",
-  heroSubtitle: "Crafting scalable solutions with React, Node.js, Android & modern technologies",
+  title: "Full-Stack & Mobile Developer",
+  tagline: "Building web and mobile products with React, Flutter and Odoo",
+  heroSubtitle: "Building web and mobile products with React, Flutter, Odoo and Python",
   email: "www.naayaab2004@gmail.com",
   phone: "+91 8618238048",
-  location: "Bangalore, Karnataka, India",
+  location: "Savanur, Karnataka, India",
   timezone: "IST",
-  yearsOfExperience: 1,
+  // Used to calculate "experience" automatically, so the site stays accurate over time
+  careerStart: "2026-04-01",
+  graduationYear: 2026,
   projectsCompleted: 10,
-  happyClients: 8,
-  
-  biography: `I'm a motivated Computer Science student and aspiring full-stack developer passionate about web and Android development. Currently pursuing my B.E. degree, I've built several personal projects including e-commerce platforms, gym management systems, and resume analyzers that showcase my skills.
+  // Edit this when your job-search status changes
+  availability: {
+    open: true,
+    label: "Open to new opportunities",
+    note: "Open to full-stack, frontend and mobile engineering roles, and freelance projects.",
+  },
 
-I specialize in React.js for dynamic frontend experiences, Node.js for backend APIs and services,React native and Android studio for mobile apps. Through hands-on projects, I've created scalable web apps and intuitive mobile applications while continuously learning modern technologies.
+  biography: `I'm a Software Developer in Hubli, Karnataka, and a 2026 Computer Science graduate. I build web and mobile products on top of Odoo, from Flutter apps to React portals, for teams in aviation, logistics and business communication.
 
-When not coding, I research on technologies, observe what's going on in the market, and explore the latest in web and mobile development. I believe great software starts with understanding user needs and delivering clean, efficient solutions.`,
+At Geelani Consultancy and Solutions I've shipped a Flutter messaging app integrated with Odoo and Firebase push notifications, an IRROPS passenger management system for Air India and Air India Express, and a B2B transport and fleet platform with agency and vendor portals. Before that, I built and deployed full-stack personal projects in e-commerce, healthcare, fitness and agriculture.
+
+I care about understanding the user's problem first, then delivering clean, reliable software that solves it.`,
 
   funFacts: [
     "Shipped 10+ projects across web, mobile, and Odoo, from first commit to production",
@@ -41,28 +48,22 @@ When not coding, I research on technologies, observe what's going on in the mark
 
   experiences: [
     {
-      role: "Full-Stack Web & AI Developer",
-      organization: "Independent Software Projects",
-      period: "2024 - Present",
-      location: "Bangalore, India",
-      description: "Architected and delivered multiple production-grade web applications including Vivid Commerce, HealthBloom, and Resume Savvy. Implemented high-efficiency REST APIs, responsive glassmorphism interfaces, and integrated OpenAI API for natural language analysis.",
-      skills: ["React.js", "Node.js", "TypeScript", "Tailwind CSS", "OpenAI API", "Vercel"],
+      role: "Software Developer",
+      organization: "Geelani Consultancy and Solutions",
+      period: "Apr 2026 – Present",
+      current: true,
+      location: "Hubli, India",
+      description: "Building web and mobile products on Odoo: a Flutter communication app with Firebase push notifications, an IRROPS passenger management system for Air India and Air India Express, and a B2B transport and fleet platform with agency and vendor portals.",
+      skills: ["Flutter", "Dart", "React.js","Next.js", "Odoo", "Django", "Python", "FastAPI", "Firebase", "Traccar"],
     },
     {
-      role: "Android Application Developer",
-      organization: "Mobile App Innovations",
-      period: "2023 - 2024",
-      location: "Bangalore, India",
-      description: "Engineered performant native and cross-platform mobile apps with Java, Kotlin, and React Native. Focused on reactive state handling, offline caching, and responsive material layouts.",
-      skills: ["Android Studio", "Java", "Kotlin", "React Native", "Firebase"],
-    },
-    {
-      role: "Computer Science Engineering Student",
-      organization: "SMT Kamala & Shri Venakppa M. Agadi Engineering College",
-      period: "2022 - 2026",
+      role: "B.E. in Computer Science",
+      organization: "Smt Kamala and Shri Venkappa M Agadi College of Engineering and Technology",
+      period: "2022 – 2026",
+      current: false,
       location: "Karnataka, India",
-      description: "Specializing in Software Engineering, Distributed Systems, Data Structures, and Artificial Intelligence. Leading collaborative projects and mentoring junior engineering students.",
-      skills: ["Data Structures", "Algorithms", "Python", "Database Systems", "System Design"],
+      description: "Graduated in early 2026 with a focus on software engineering and AI. Alongside coursework, built and deployed full-stack projects including Vivid Commerce, HealthBloom, Resume Savvy, Gym Buddy and FarmWise Hub.",
+      skills: ["Data Structures", "Algorithms", "DBMS", "Python", "Software Engineering"],
     },
   ],
 
@@ -246,6 +247,8 @@ export interface Project {
   professional?: boolean;
   challenges?: string[];
   highlights?: string[];
+  /** Main building blocks in order, shown as a system overview in the project details panel */
+  architecture?: string[];
 }
 
 export const projects: Project[] = [
@@ -260,6 +263,7 @@ export const projects: Project[] = [
     techStack: ["Flutter", "Dart", "Odoo", "Python", "Firebase Cloud Messaging", "JSON-RPC API"],
     featured: true,
     professional: true,
+    architecture: ["Flutter app (Dart)", "JSON-RPC API", "Odoo backend (Python)", "Firebase Cloud Messaging", "Push notifications"],
     highlights: [
       "Improved the user experience of Odoo communication on mobile",
       "Integrated Flutter with the Odoo backend",
@@ -277,6 +281,7 @@ export const projects: Project[] = [
     techStack: ["React", "Odoo"],
     featured: true,
     professional: true,
+    architecture: ["Passenger scanning", "React management portal", "Odoo backend", "Transport, hotels & meals"],
     highlights: [
       "Passenger data capture through scanning",
       "Centralized passenger record management",
@@ -295,6 +300,7 @@ export const projects: Project[] = [
     techStack: ["React", "FastAPI", "Odoo", "Traccar"],
     featured: true,
     professional: true,
+    architecture: ["Client & roster requests", "React agency portal", "FastAPI + Odoo backend", "Vendor portal", "Traccar fleet tracking"],
     highlights: [
       "Manual trip creation and bulk transport management",
       "Per-kilometre and hourly vehicle rental workflows",
@@ -383,7 +389,7 @@ export const projects: Project[] = [
     category: "Agriculture",
     description: "Empowering farmers with a digital marketplace to sell produce directly, access real-time market analytics, and connect with buyers in their communities.",
     longDescription: "Built a platform for farmers to showcase produce, manage listings, connect with buyers, and access farming resources, market analytics, and weather forecasts.",
-    image: "/images/crop-field.jpg",
+    image: "/images/crop-field.webp",
     techStack: ["React.js", "Node.js", "TailwindCSS","TypeScript","Vercel"],
     liveUrl: "https://farmwise-hub.vercel.app/",
     githubUrl: "https://github.com/Sayednaayaab/farmwise-hub.git",

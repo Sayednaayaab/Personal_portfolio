@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { AnimatePresence, MotionConfig, motion, type Variants } from 'framer-motion';
-import { Building2, CheckCircle2, ExternalLink, Github, Lock, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Building2, CheckCircle2, ExternalLink, Github, Lock, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Project } from '@/data/developer';
 import { startSmoothScroll, stopSmoothScroll } from '@/lib/smoothScroll';
@@ -153,6 +153,28 @@ export function ProjectDetailsDialog({ project, onClose }: ProjectDetailsDialogP
                         <SectionLabel>Overview</SectionLabel>
                         <p className="text-[15px] leading-relaxed text-foreground/90">{project.longDescription}</p>
                       </motion.section>
+
+                      {project.architecture && project.architecture.length > 0 && (
+                        <motion.section variants={sectionVariants}>
+                          <SectionLabel>System Overview</SectionLabel>
+                          <motion.ol
+                            variants={listVariants}
+                            className="flex flex-wrap items-center gap-2"
+                            aria-label="How the system's main parts connect"
+                          >
+                            {project.architecture.map((part, i) => (
+                              <motion.li key={part} variants={itemVariants} className="flex items-center gap-2">
+                                <span className="rounded-xl border border-accent/30 bg-accent/10 px-3 py-2 text-xs font-medium text-foreground sm:text-sm">
+                                  {part}
+                                </span>
+                                {i < project.architecture!.length - 1 && (
+                                  <ArrowRight className="size-4 shrink-0 text-accent/70" aria-hidden="true" />
+                                )}
+                              </motion.li>
+                            ))}
+                          </motion.ol>
+                        </motion.section>
+                      )}
 
                       {points.length > 0 && (
                         <motion.section variants={sectionVariants}>

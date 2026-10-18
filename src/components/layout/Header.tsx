@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, Briefcase } from 'lucide-react';
+import { Menu, Briefcase, Search } from 'lucide-react';
+import { OPEN_COMMAND_MENU } from './CommandMenu';
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
@@ -10,10 +11,10 @@ import { scrollToTarget } from '@/lib/smoothScroll';
 
 const navLinks = [
   { name: 'Home', id: 'home' },
-  { name: 'About', id: 'about' },
   { name: 'Projects', id: 'projects' },
-  { name: 'Skills', id: 'skills' },
   { name: 'Experience', id: 'experience' },
+  { name: 'Skills', id: 'skills' },
+  { name: 'About', id: 'about' },
   { name: 'Contact', id: 'contact' },
 ];
 
@@ -151,7 +152,16 @@ export function Header() {
             </nav>
 
             {/* Right Actions */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_MENU))}
+                className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border/80 bg-secondary/40 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors cursor-pointer"
+                aria-label="Open quick menu (Ctrl+K)"
+              >
+                <Search className="size-3.5" />
+                <kbd className="font-mono text-[10px]">Ctrl K</kbd>
+              </button>
               <Button
                 size="sm"
                 onClick={() => handleNavClick('contact')}

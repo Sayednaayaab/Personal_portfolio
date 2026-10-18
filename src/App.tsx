@@ -2,22 +2,19 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Layout } from "@/components/layout/Layout";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { LoadingFallback } from "@/components/ui/LoadingFallback";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Analytics } from "@vercel/analytics/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { lazy, Suspense } from "react";
 
 // Code-split route components for better performance
 const Index = lazy(() => import("./pages/Index"));
-const Portfolio = lazy(() => import("./pages/Portfolio"));
-const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 import { Preloader } from "@/components/ui/Preloader";
@@ -40,38 +37,10 @@ function AnimatedRoutes() {
             </PageTransition>
           }
         />
-        <Route
-          path="/portfolio"
-          element={
-            <PageTransition>
-              <Portfolio />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/project/:slug"
-          element={
-            <PageTransition>
-              <ProjectDetail />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <PageTransition>
-              <About />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <PageTransition>
-              <Contact />
-            </PageTransition>
-          }
-        />
+        {/* Old template pages: everything now lives on the home page */}
+        {['/portfolio', '/project/:slug', '/about', '/contact'].map((path) => (
+          <Route key={path} path={path} element={<Navigate to="/" replace />} />
+        ))}
         <Route
           path="*"
           element={
@@ -103,7 +72,7 @@ function App() {
 
   // Safety net in case the preloader never reports completion
   useEffect(() => {
-    const timer = setTimeout(handleComplete, 9000);
+    const timer = setTimeout(handleComplete, 5000);
     return () => clearTimeout(timer);
   }, [handleComplete]);
 
@@ -113,6 +82,8 @@ function App() {
         <ThemeProvider>
           <TooltipProvider>
             <SmoothScroll />
+            {/* Visitor analytics (enable in Vercel → Project → Analytics) */}
+            <Analytics />
             <Toaster />
             <Sonner />
             <AnimatePresence>
@@ -128,8 +99,8 @@ function App() {
                     initial={{ opacity: 0.55, scale: 0.94 }}
                     // transitionEnd clears the transform so fixed-position children (e.g. lightbox) work normally
                     animate={{ opacity: 1, scale: 1, transitionEnd: { transform: 'none' } }}
-                    // Starts as the blast doors open (after the 0.4s charge + 0.28s seam)
-                    transition={{ duration: 1.3, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                    // Starts as the blast doors open (after the 0.22s charge + 0.18s seam)
+                    transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     style={{ transformOrigin: '50% 30vh' }}
                   >
                     <Suspense fallback={<LoadingFallback />}>

@@ -4,7 +4,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 
-dotenv.config();
+// override: values in backend/.env win over machine-wide environment variables with the same name
+dotenv.config({ override: true });
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -164,6 +165,12 @@ ${message}
     console.error('Error sending email:', error);
     res.status(500).json({ message: 'Failed to send email', error: error.message });
   }
+});
+
+// AI assistant: reuse the Vercel function so local dev matches production
+app.post('/api/chat', async (req, res) => {
+  const { default: chatHandler } = await import('../api/chat.js');
+  return chatHandler(req, res);
 });
 
 // Bind explicitly to IPv4 loopback to avoid IPv6-only binding issues on some systems

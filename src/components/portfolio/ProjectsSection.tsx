@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { projects, type Project } from '@/data/developer';
 import { ProjectCard3D } from './ProjectCard3D';
 import { ProjectDetailsDialog } from './ProjectDetailsDialog';
+import { OPEN_PROJECT_EVENT } from '@/components/layout/CommandMenu';
 import { cn } from '@/lib/utils';
 
 const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)))];
@@ -10,6 +11,16 @@ const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)
 export function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  // The command menu can open a project's details directly
+  useEffect(() => {
+    const onOpenProject = (e: Event) => {
+      const project = projects.find((p) => p.id === (e as CustomEvent<string>).detail);
+      if (project) setTimeout(() => setSelectedProject(project), 450);
+    };
+    window.addEventListener(OPEN_PROJECT_EVENT, onOpenProject);
+    return () => window.removeEventListener(OPEN_PROJECT_EVENT, onOpenProject);
+  }, []);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 

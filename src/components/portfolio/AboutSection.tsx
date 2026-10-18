@@ -3,13 +3,17 @@ import { useRef, useState, useEffect } from 'react';
 import { Download, MapPin, GraduationCap, Code2, Sparkles, Coffee, Clock, CheckCircle2, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { developerInfo, projects } from '@/data/developer';
+import { experienceSince } from '@/lib/experience';
 
 const companyProjectCount = projects.filter((p) => p.professional).length;
+const liveProductCount = projects.filter((p) => p.liveUrl).length;
+const { availability } = developerInfo;
 
 export function AboutSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [currentTime, setCurrentTime] = useState('');
+  const experience = experienceSince(developerInfo.careerStart);
 
   useEffect(() => {
     const updateTime = () => {
@@ -68,7 +72,7 @@ export function AboutSection() {
                 Architecting scalable web solutions and intuitive mobile experiences.
               </h3>
               <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                I'm a Computer Science student and full-stack software engineer based in Bangalore. With hands-on experience across modern React, Node.js, and Android development, I focus on turning complex challenges into high-performance, user-friendly digital products.
+                I'm a Software Developer in Hubli, Karnataka, and a 2026 Computer Science graduate. I build Odoo-backed web and mobile products, from Flutter apps to React portals, for teams in aviation, logistics and business communication.
               </p>
               <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
                 When I'm not developing, I study cutting-edge AI workflows, explore RAG systems, and continuously expand my software engineering foundations.
@@ -106,20 +110,22 @@ export function AboutSection() {
               <div className="text-3xl font-extrabold tracking-tight font-mono text-foreground">
                 {currentTime || '12:00:00 PM'}
               </div>
-              <p className="text-xs text-muted-foreground">Bangalore, India (UTC+5:30)</p>
+              <p className="text-xs text-muted-foreground">Hubli, India (UTC+5:30)</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-secondary/60 border border-border/50 space-y-2">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  {availability.open && (
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  )}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${availability.open ? 'bg-emerald-500' : 'bg-muted-foreground'}`} />
                 </span>
-                <span className="text-xs font-semibold text-emerald-500">Available to Hire</span>
+                <span className={`text-xs font-semibold ${availability.open ? 'text-emerald-500' : 'text-muted-foreground'}`}>
+                  {availability.label}
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Open to full-stack, frontend, or mobile engineering roles.
-              </p>
+              <p className="text-xs text-muted-foreground">{availability.note}</p>
             </div>
           </motion.div>
 
@@ -147,12 +153,12 @@ export function AboutSection() {
                 <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Company Projects</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
-                <div className="text-2xl font-bold text-emerald-500">{developerInfo.happyClients}+</div>
-                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Clients Served</div>
+                <div className="text-2xl font-bold text-emerald-500">{liveProductCount}</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Live Demos</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-secondary/50 border border-border/40 text-center">
-                <div className="text-2xl font-bold text-primary">{developerInfo.yearsOfExperience}+</div>
-                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">Years Experience</div>
+                <div className="text-2xl font-bold text-primary">{experience.value}</div>
+                <div className="text-[11px] text-muted-foreground font-medium mt-0.5">{experience.label}</div>
               </div>
             </div>
           </motion.div>
@@ -173,7 +179,7 @@ export function AboutSection() {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h4 className="text-lg font-bold">{edu.degree}</h4>
                   <span className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary font-mono font-medium">
-                    Class of {edu.year}
+                    Graduated {edu.year}
                   </span>
                 </div>
                 <p className="text-sm text-foreground/80 font-medium">{edu.school}</p>

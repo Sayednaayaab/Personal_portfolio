@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Sparkles, Terminal, Code2, Smartphone, Cpu } from 'lucide-react';
+import { Sparkles, Terminal, Code2, Cpu } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
 
 export function HeroPortal3D() {
@@ -123,10 +123,10 @@ export function HeroPortal3D() {
 
           {/* Bottom Card Footer */}
           <div className="flex items-center justify-between text-xs px-1 text-muted-foreground font-mono">
-            <span>Bangalore, India</span>
+            <span>Savanur, India</span>
             <span className="text-accent flex items-center gap-1">
               <Sparkles className="size-3" />
-              10+ Projects Built
+              {developerInfo.projectsCompleted}+ Projects Built
             </span>
           </div>
         </div>
@@ -159,11 +159,11 @@ export function HeroPortal3D() {
           className="absolute -bottom-3 -right-4 px-3.5 py-1.5 rounded-2xl bg-card/95 backdrop-blur-xl border border-accent/40 shadow-xl flex items-center gap-2 z-40 pointer-events-none group-hover:scale-105 transition-transform"
         >
           <div className="p-1 rounded-lg bg-accent/20 text-accent">
-            <Smartphone className="size-3.5" />
+            <Cpu className="size-3.5" />
           </div>
           <div className="text-left">
-            <p className="text-[10px] font-mono text-muted-foreground uppercase leading-none">Mobile & AI</p>
-            <p className="text-xs font-bold text-foreground leading-tight">Android & LLMs</p>
+            <p className="text-[10px] font-mono text-muted-foreground uppercase leading-none">Platform</p>
+            <p className="text-xs font-bold text-foreground leading-tight">Odoo & Python</p>
           </div>
         </motion.div>
       </motion.div>

@@ -2,6 +2,8 @@ import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { CommandMenu } from './CommandMenu';
+import { ChatWidget } from '@/components/chat/ChatWidget';
 import { StarfieldBackground } from './StarfieldBackground';
 
 interface LayoutProps {
@@ -29,6 +31,8 @@ export function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <Footer />
+      <CommandMenu />
+      <ChatWidget />
     </div>
   );
 }
