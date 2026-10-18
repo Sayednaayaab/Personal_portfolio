@@ -103,7 +103,7 @@ function App() {
 
   // Safety net in case the preloader never reports completion
   useEffect(() => {
-    const timer = setTimeout(handleComplete, 6000);
+    const timer = setTimeout(handleComplete, 9000);
     return () => clearTimeout(timer);
   }, [handleComplete]);
 
@@ -123,10 +123,13 @@ function App() {
               <Layout>
                 {isRevealed && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 1.04, filter: 'blur(6px)' }}
-                    // transitionEnd clears transform/filter so fixed-position children (e.g. lightbox) work normally
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none', transform: 'none' } }}
-                    transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                    // The site settles in behind the opening doors
+                    // Transform + opacity only (no filter) so the entrance stays on the GPU
+                    initial={{ opacity: 0.55, scale: 0.94 }}
+                    // transitionEnd clears the transform so fixed-position children (e.g. lightbox) work normally
+                    animate={{ opacity: 1, scale: 1, transitionEnd: { transform: 'none' } }}
+                    // Starts as the blast doors open (after the 0.4s charge + 0.28s seam)
+                    transition={{ duration: 1.3, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}
                     style={{ transformOrigin: '50% 30vh' }}
                   >
                     <Suspense fallback={<LoadingFallback />}>
