@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { photographerInfo } from '@/data/photographer';
+import { developerInfo } from '@/data/developer';
 
 interface SEOHeadProps {
   title?: string;
@@ -16,21 +16,25 @@ interface SEOHeadProps {
 export function SEOHead({ 
   title, 
   description, 
-  // Photo by Oyemike Princewill on Unsplash
-  image = 'https://images.unsplash.com/photo-1662333085102-f6ae3be21c91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDA2OTF8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjI3Njk1NjB8&ixlib=rb-4.1.0&q=80&w=1080',
+  image,
   type = 'website'
 }: SEOHeadProps) {
   const location = useLocation();
   
-  const fullTitle = title 
-    ? `${title} | ${photographerInfo.name}` 
-    : `${photographerInfo.name} - ${photographerInfo.tagline}`;
-  
-  const defaultDescription = photographerInfo.heroIntroduction;
-  const fullDescription = description || defaultDescription;
-  
+  const { name } = developerInfo;
+  // Don't repeat the name when the page title already includes it
+  const fullTitle = !title
+    ? `${name} | ${developerInfo.title}`
+    : title.includes(name)
+      ? title
+      : `${title} | ${name}`;
+
+  const fullDescription = description || `${developerInfo.title}. ${developerInfo.heroSubtitle}.`;
+
   const baseUrl = window.location.origin;
   const fullUrl = `${baseUrl}${location.pathname}`;
+  // Absolute URL is required for link previews
+  const imageUrl = image ? new URL(image, baseUrl).href : `${baseUrl}${developerInfo.profileImage}`;
 
   useEffect(() => {
     // Update document title
@@ -58,19 +62,19 @@ export function SEOHead({
     updateMetaTag('og:description', fullDescription, true);
     updateMetaTag('og:type', type, true);
     updateMetaTag('og:url', fullUrl, true);
-    updateMetaTag('og:image', image, true);
-    updateMetaTag('og:site_name', photographerInfo.name, true);
+    updateMetaTag('og:image', imageUrl, true);
+    updateMetaTag('og:site_name', name, true);
     
     // Twitter Card tags
     updateMetaTag('twitter:card', 'summary_large_image');
     updateMetaTag('twitter:title', fullTitle);
     updateMetaTag('twitter:description', fullDescription);
-    updateMetaTag('twitter:image', image);
+    updateMetaTag('twitter:image', imageUrl);
 
     // Additional SEO tags
-    updateMetaTag('author', photographerInfo.name);
-    updateMetaTag('keywords', `photography, ${photographerInfo.name}, professional photographer, ${photographerInfo.tagline}`);
-  }, [fullTitle, fullDescription, fullUrl, image, type]);
+    updateMetaTag('author', name);
+    updateMetaTag('keywords', `${name}, full-stack developer, mobile developer, React, Next.js, Flutter, Odoo, Python, portfolio`);
+  }, [name, fullTitle, fullDescription, fullUrl, imageUrl, type]);
 
   return null;
 }
