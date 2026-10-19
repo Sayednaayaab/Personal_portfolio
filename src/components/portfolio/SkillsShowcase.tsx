@@ -142,7 +142,7 @@ function MarqueeRow({ items, reverse }: { items: Skill[]; reverse?: boolean }) {
             <div
               key={`${skill.name}-${i}`}
               aria-hidden={i >= items.length}
-              className="flex items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-card/70 px-4 py-2 text-sm font-medium text-foreground/90 backdrop-blur"
+              className="flex items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-card/85 px-4 py-2 text-sm font-medium text-foreground/90"
             >
               <span className={cn('size-2 rounded-full bg-gradient-to-r', cat.gradient)} />
               {skill.name}
@@ -182,7 +182,7 @@ export function SkillsShowcase() {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex justify-center"
       >
-        <div className="inline-flex max-w-full flex-wrap justify-center gap-1 rounded-2xl border border-border/80 bg-card/70 p-1.5 backdrop-blur">
+        <div className="inline-flex max-w-full flex-wrap justify-center gap-1 rounded-2xl border border-border/80 bg-card/85 p-1.5">
           {categories.map((cat) => {
             const count = cat.id === 'all' ? allSkills.length : skills[cat.id].length;
             const isActive = active === cat.id;

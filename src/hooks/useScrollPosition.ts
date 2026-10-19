@@ -1,45 +1,50 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
- * Custom hook to track scroll position
- * Used for header transparency/solid state transitions
+ * Tracks whether the page has scrolled past a threshold, for the header's
+ * transparent → solid transition.
+ *
+ * State only changes when the threshold is crossed (not on every scroll event),
+ * so components using this don't re-render on each scroll frame.
  */
-export const useScrollPosition = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+export const useScrollPosition = (threshold = 50) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+  const state = useRef({ lastY: 0, scrolled: false, direction: 'up' as 'up' | 'down', frame: 0 });
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
+    const s = state.current;
+    s.lastY = window.scrollY;
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Determine scroll direction
-      if (currentScrollY > lastScrollY) {
-        setScrollDirection('down');
-      } else if (currentScrollY < lastScrollY) {
-        setScrollDirection('up');
+    const update = () => {
+      s.frame = 0;
+      const y = window.scrollY;
+      const scrolled = y > threshold;
+      if (scrolled !== s.scrolled) {
+        s.scrolled = scrolled;
+        setIsScrolled(scrolled);
       }
-      
-      // Update scroll position
-      setScrollY(currentScrollY);
-      
-      // Header should be solid if scrolled more than 50px
-      setIsScrolled(currentScrollY > 50);
-      
-      lastScrollY = currentScrollY;
+      const direction = y > s.lastY ? 'down' : y < s.lastY ? 'up' : s.direction;
+      if (direction !== s.direction) {
+        s.direction = direction;
+        setScrollDirection(direction);
+      }
+      s.lastY = y;
+    };
+
+    // At most one check per animation frame
+    const handleScroll = () => {
+      if (!s.frame) s.frame = requestAnimationFrame(update);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Initial check
-    handleScroll();
+    update();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(s.frame);
     };
-  }, []);
+  }, [threshold]);
 
-  return { scrollY, scrollDirection, isScrolled };
+  return { isScrolled, scrollDirection };
 };

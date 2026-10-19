@@ -9,29 +9,49 @@ const companyProjectCount = projects.filter((p) => p.professional).length;
 const liveProductCount = projects.filter((p) => p.liveUrl).length;
 const { availability } = developerInfo;
 
+const formatIST = () =>
+  new Date().toLocaleTimeString('en-US', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+/**
+ * Ticking clock in its own component, so only this text re-renders each second
+ * (not the whole About section and its animations). Pauses while off screen.
+ */
+function LocalClock() {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [time, setTime] = useState(formatIST);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const start = () => {
+      if (interval) return;
+      setTime(formatIST());
+      interval = setInterval(() => setTime(formatIST()), 1000);
+    };
+    const stop = () => {
+      clearInterval(interval);
+      interval = undefined;
+    };
+    const observer = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+    if (ref.current) observer.observe(ref.current);
+    return () => {
+      stop();
+      observer.disconnect();
+    };
+  }, []);
+
+  return <span ref={ref}>{time}</span>;
+}
+
 export function AboutSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const [currentTime, setCurrentTime] = useState('');
   const experience = experienceSince(developerInfo.careerStart);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(
-        now.toLocaleTimeString('en-US', {
-          timeZone: 'Asia/Kolkata',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true,
-        })
-      );
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <section id="about" className="section-padding relative overflow-hidden" ref={ref}>
@@ -108,7 +128,7 @@ export function AboutSection() {
                 <Clock className="size-4 text-accent" />
               </div>
               <div className="text-3xl font-extrabold tracking-tight font-mono text-foreground">
-                {currentTime || '12:00:00 PM'}
+                <LocalClock />
               </div>
               <p className="text-xs text-muted-foreground">Hubli, India (UTC+5:30)</p>
             </div>

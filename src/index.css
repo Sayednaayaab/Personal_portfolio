@@ -510,7 +510,8 @@ html.lenis, html.lenis body {
 .nebula {
   inset: auto;
   border-radius: 9999px;
-  filter: blur(120px);
+  /* Soft edges come from multi-stop gradients, not filter: blur() (blurring a
+     huge animated layer is very expensive, especially on phones) */
   opacity: 0.1;
   will-change: transform;
 }
@@ -520,29 +521,29 @@ html.lenis, html.lenis body {
 }
 
 .nebula-1 {
-  width: 55vw;
-  height: 40vw;
-  top: -10%;
-  left: -10%;
-  background: radial-gradient(ellipse, hsl(225 85% 55%) 0%, transparent 70%);
+  width: 70vw;
+  height: 52vw;
+  top: -17%;
+  left: -17%;
+  background: radial-gradient(ellipse, hsl(225 85% 55%) 0%, hsl(225 85% 55% / 0.55) 25%, hsl(225 85% 55% / 0.22) 48%, hsl(225 85% 55% / 0.06) 62%, transparent 72%);
   animation: nebula-drift-1 60s ease-in-out infinite alternate;
 }
 
 .nebula-2 {
-  width: 45vw;
-  height: 35vw;
-  top: 40%;
-  right: -12%;
-  background: radial-gradient(ellipse, hsl(265 75% 55%) 0%, transparent 70%);
+  width: 58vw;
+  height: 46vw;
+  top: 34%;
+  right: -18%;
+  background: radial-gradient(ellipse, hsl(265 75% 55%) 0%, hsl(265 75% 55% / 0.55) 25%, hsl(265 75% 55% / 0.22) 48%, hsl(265 75% 55% / 0.06) 62%, transparent 72%);
   animation: nebula-drift-2 75s ease-in-out infinite alternate;
 }
 
 .nebula-3 {
-  width: 40vw;
-  height: 30vw;
-  bottom: -15%;
-  left: 25%;
-  background: radial-gradient(ellipse, hsl(185 80% 40%) 0%, transparent 70%);
+  width: 52vw;
+  height: 40vw;
+  bottom: -21%;
+  left: 19%;
+  background: radial-gradient(ellipse, hsl(185 80% 40%) 0%, hsl(185 80% 40% / 0.55) 25%, hsl(185 80% 40% / 0.22) 48%, hsl(185 80% 40% / 0.06) 62%, transparent 72%);
   opacity: 0.07;
   animation: nebula-drift-3 90s ease-in-out infinite alternate;
 }
@@ -578,7 +579,7 @@ html.lenis, html.lenis body {
 
 @media (max-width: 767px) {
   .nebula {
-    filter: blur(80px);
+    opacity: 0.12;
   }
   .nebula-1 { width: 90vw; height: 70vw; }
   .nebula-2 { width: 80vw; height: 60vw; }
@@ -593,6 +594,18 @@ html.lenis, html.lenis body {
 
 /* Manifesto pipeline: glowing packet travelling along each connector */
 .pipeline-packet {
+  /* A track the size of its connector; the dot is ::before. Moving the track with
+     transform (not top/left) keeps the animation on the GPU with no layout per frame. */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: packet-vertical 2.4s ease-in-out infinite;
+}
+
+.pipeline-packet::before {
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
@@ -602,30 +615,30 @@ html.lenis, html.lenis body {
   border-radius: 9999px;
   background: var(--accent);
   box-shadow: 0 0 10px 2px color-mix(in oklab, var(--accent) 70%, transparent);
-  opacity: 0;
-  animation: packet-vertical 2.4s ease-in-out infinite;
 }
 
 @media (min-width: 1024px) {
   .pipeline-packet {
+    animation-name: packet-horizontal;
+  }
+  .pipeline-packet::before {
     left: 0;
     top: 50%;
-    animation-name: packet-horizontal;
   }
 }
 
 @keyframes packet-vertical {
-  0% { top: 0; opacity: 0; }
+  0% { transform: translateY(0); opacity: 0; }
   15% { opacity: 1; }
-  60% { top: 100%; opacity: 1; }
-  70%, 100% { top: 100%; opacity: 0; }
+  60% { transform: translateY(100%); opacity: 1; }
+  70%, 100% { transform: translateY(100%); opacity: 0; }
 }
 
 @keyframes packet-horizontal {
-  0% { left: 0; opacity: 0; }
+  0% { transform: translateX(0); opacity: 0; }
   15% { opacity: 1; }
-  60% { left: 100%; opacity: 1; }
-  70%, 100% { left: 100%; opacity: 0; }
+  60% { transform: translateX(100%); opacity: 1; }
+  70%, 100% { transform: translateX(100%); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

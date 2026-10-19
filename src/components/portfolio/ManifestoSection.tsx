@@ -82,7 +82,7 @@ function Stage({ order, index, verb, icon: Icon, from, to, caption }: StageProps
     <motion.article
       custom={order}
       variants={cardVariants}
-      className="group relative w-full rounded-2xl border border-border/70 bg-card/80 p-5 backdrop-blur-sm transition-colors duration-300 hover:border-primary/50 lg:w-[270px] lg:shrink-0 xl:w-[300px]"
+      className="group relative w-full rounded-2xl border border-border/70 bg-card/95 p-5 transition-colors duration-300 hover:border-primary/50 lg:w-[270px] lg:shrink-0 xl:w-[300px]"
     >
       {/* Top glow line */}
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -206,7 +206,7 @@ export function ManifestoSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 9 * STEP, duration: 0.5 }}
-            className="mx-auto mt-12 flex max-w-fit flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-full border border-border/60 bg-card/60 px-5 py-2.5 font-mono text-xs text-muted-foreground backdrop-blur-sm"
+            className="mx-auto mt-12 flex max-w-fit flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-full border border-border/60 bg-card/75 px-5 py-2.5 font-mono text-xs text-muted-foreground"
           >
             <span className="flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400" />

@@ -47,9 +47,10 @@ export function HeroPortal3D() {
     >
       {/* Background ambient glowing orbs */}
       <div
-        className="absolute -inset-4 rounded-full blur-[100px] opacity-30 dark:opacity-40 -z-10 animate-pulse pointer-events-none"
+        className="absolute -inset-24 rounded-full opacity-30 dark:opacity-40 -z-10 animate-pulse pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(59,130,246,0.6) 0%, rgba(6,182,212,0.4) 50%, transparent 70%)',
+          // Soft multi-stop gradient instead of filter: blur() on a large animated layer
+          background: 'radial-gradient(circle, rgba(59,130,246,0.55) 0%, rgba(6,182,212,0.3) 30%, rgba(6,182,212,0.1) 50%, transparent 68%)',
           animationDuration: '6s',
         }}
       />
@@ -67,7 +68,7 @@ export function HeroPortal3D() {
         className="relative rounded-[32px] p-2.5 bg-gradient-to-tr from-primary/40 via-accent/30 to-purple-500/40 border border-border/80 shadow-[0_20px_50px_rgba(59,130,246,0.2)] hover:shadow-[0_25px_60px_rgba(59,130,246,0.35)] transition-shadow duration-500 cursor-pointer group"
       >
         {/* Inner Card Container */}
-        <div className="relative rounded-[26px] overflow-hidden bg-card/90 backdrop-blur-xl border border-white/10 p-4 space-y-4">
+        <div className="relative rounded-[26px] overflow-hidden bg-card/95 border border-white/10 p-4 space-y-4">
           {/* Holographic light sheen that glides with mouse */}
           <motion.div
             className="pointer-events-none absolute -inset-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30"
@@ -114,7 +115,7 @@ export function HeroPortal3D() {
                   {developerInfo.title}
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[11px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">
+              <div className="flex items-center gap-1 text-[11px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                 <span>Online</span>
               </div>
@@ -138,7 +139,7 @@ export function HeroPortal3D() {
             y: badgeTranslateY,
             transform: 'translateZ(45px)',
           }}
-          className="absolute -top-3 -left-4 px-3.5 py-1.5 rounded-2xl bg-card/95 backdrop-blur-xl border border-primary/40 shadow-xl flex items-center gap-2 z-40 pointer-events-none group-hover:scale-105 transition-transform"
+          className="absolute -top-3 -left-4 px-3.5 py-1.5 rounded-2xl bg-card/95 border border-primary/40 shadow-xl flex items-center gap-2 z-40 pointer-events-none group-hover:scale-105 transition-transform"
         >
           <div className="p-1 rounded-lg bg-primary/20 text-primary">
             <Code2 className="size-3.5" />
@@ -156,7 +157,7 @@ export function HeroPortal3D() {
             y: useTransform(mouseY, [-0.5, 0.5], [12, -12]),
             transform: 'translateZ(50px)',
           }}
-          className="absolute -bottom-3 -right-4 px-3.5 py-1.5 rounded-2xl bg-card/95 backdrop-blur-xl border border-accent/40 shadow-xl flex items-center gap-2 z-40 pointer-events-none group-hover:scale-105 transition-transform"
+          className="absolute -bottom-3 -right-4 px-3.5 py-1.5 rounded-2xl bg-card/95 border border-accent/40 shadow-xl flex items-center gap-2 z-40 pointer-events-none group-hover:scale-105 transition-transform"
         >
           <div className="p-1 rounded-lg bg-accent/20 text-accent">
             <Cpu className="size-3.5" />

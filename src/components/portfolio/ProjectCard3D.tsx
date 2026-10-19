@@ -111,13 +111,14 @@ export const ProjectCard3D = forwardRef<HTMLDivElement, ProjectCardProps>(functi
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
 
           {/* Quick Action Buttons on Hover */}
           <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
             {project.featured && (
-              <Badge className="bg-primary/90 text-primary-foreground text-xs shadow-md backdrop-blur-sm border-0 font-medium flex items-center gap-1">
+              <Badge className="bg-primary/90 text-primary-foreground text-xs shadow-md border-0 font-medium flex items-center gap-1">
                 <Sparkles className="size-3" />
                 Featured
               </Badge>
@@ -125,7 +126,7 @@ export const ProjectCard3D = forwardRef<HTMLDivElement, ProjectCardProps>(functi
           </div>
 
           <div className="absolute bottom-3 left-3 z-20">
-            <span className="text-xs px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md text-foreground font-medium border border-border/50">
+            <span className="text-xs px-2.5 py-1 rounded-full bg-background/95 text-foreground font-medium border border-border/50">
               {project.category}
             </span>
           </div>

@@ -47,7 +47,7 @@ export function ContactSection() {
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-2 p-6 md:p-8 rounded-3xl bg-card/80 backdrop-blur-sm border border-border/80 shadow-md space-y-7"
+            className="lg:col-span-2 p-6 md:p-8 rounded-3xl bg-card/95 border border-border/80 shadow-md space-y-7"
           >
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-400">
@@ -115,7 +115,7 @@ export function ContactSection() {
             initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="lg:col-span-3 relative overflow-hidden rounded-3xl border border-border/80 bg-card/80 p-6 shadow-md backdrop-blur-sm md:p-8"
+            className="lg:col-span-3 relative overflow-hidden rounded-3xl border border-border/80 bg-card/95 p-6 shadow-md md:p-8"
           >
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
             <div className="mb-6 space-y-1">

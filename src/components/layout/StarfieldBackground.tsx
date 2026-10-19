@@ -9,7 +9,8 @@ interface Star {
   alpha: number;
   twinkleSpeed: number;
   twinklePhase: number;
-  tint: string;
+  /** Precomputed CSS colour (alpha is applied via globalAlpha, so no per-frame strings) */
+  color: string;
 }
 
 interface ShootingStar {
@@ -31,10 +32,25 @@ const LIGHT_TINTS = ['30,41,59', '37,99,235', '79,70,229', '14,116,144'];
 
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
+const isLowPower = () =>
+  window.matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 4) <= 4;
+
 function starCount(width: number, height: number) {
-  const cores = navigator.hardwareConcurrency || 4;
-  const cap = width < 768 ? 160 : cores <= 4 ? 300 : 480;
-  return Math.min(Math.round((width * height) / 2600), cap);
+  const cap = width < 768 ? 110 : isLowPower() ? 220 : 320;
+  return Math.min(Math.round((width * height) / 3600), cap);
+}
+
+/** Pre-rendered round dot for near stars (drawImage is cheaper than building an arc path per star). */
+function createDotSprite() {
+  const size = 16;
+  const sprite = document.createElement('canvas');
+  sprite.width = sprite.height = size;
+  const g = sprite.getContext('2d')!;
+  g.fillStyle = '#fff';
+  g.beginPath();
+  g.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
+  g.fill();
+  return sprite;
 }
 
 /** Pre-rendered soft glow used behind near stars (cheaper than shadowBlur). */
@@ -68,6 +84,9 @@ export function StarfieldBackground() {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     const glow = createGlowSprite();
+    const dot = createDotSprite();
+    // Phones and low-power devices draw at 30fps; the drift is slow enough that it looks the same
+    const minFrameMs = isLowPower() ? 1000 / 30 : 0;
     const root = document.documentElement;
 
     let width = 0;
@@ -98,13 +117,14 @@ export function StarfieldBackground() {
           alpha: rand(d.alpha[0], d.alpha[1]),
           twinkleSpeed: rand(0.0006, 0.0022),
           twinklePhase: Math.random() * Math.PI * 2,
-          tint: tints[Math.floor(Math.random() * tints.length)],
+          color: `rgb(${tints[Math.floor(Math.random() * tints.length)]})`,
         };
       });
     };
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // 1.5x is visually identical for tiny dots and much cheaper to fill than 2-3x
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = Math.round(width * dpr);
@@ -138,14 +158,17 @@ export function StarfieldBackground() {
           ctx.drawImage(glow, x - size / 2, y - size / 2, size, size);
         }
 
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = `rgba(${s.tint},${alpha})`;
+        ctx.globalAlpha = alpha;
         if (s.radius < 0.9) {
+          ctx.fillStyle = s.color;
           ctx.fillRect(x, y, s.radius * 1.6, s.radius * 1.6);
+        } else if (isDark) {
+          // White sprite; tint differences are imperceptible at this size
+          const size = s.radius * 2;
+          ctx.drawImage(dot, x - s.radius, y - s.radius, size, size);
         } else {
-          ctx.beginPath();
-          ctx.arc(x, y, s.radius, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.fillStyle = s.color;
+          ctx.fillRect(x - s.radius, y - s.radius, s.radius * 2, s.radius * 2);
         }
       }
 
@@ -187,11 +210,12 @@ export function StarfieldBackground() {
     };
 
     const loop = (time: number) => {
+      frameId = requestAnimationFrame(loop);
+      if (minFrameMs && lastTime && time - lastTime < minFrameMs - 1) return;
       // Normalised to 60fps steps so motion speed is the same at any refresh rate
       const dt = lastTime ? Math.min((time - lastTime) / 16.67, 3) : 1;
       lastTime = time;
       draw(time, dt);
-      frameId = requestAnimationFrame(loop);
     };
 
     const start = () => {

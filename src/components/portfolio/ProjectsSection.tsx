@@ -55,7 +55,7 @@ export function ProjectsSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="flex flex-wrap justify-center gap-2 mb-12 p-1.5 rounded-full bg-secondary/40 backdrop-blur-md border border-border/40 max-w-fit mx-auto"
+          className="flex flex-wrap justify-center gap-2 mb-12 p-1.5 rounded-full bg-secondary/55 border border-border/40 max-w-fit mx-auto"
         >
           {categories.map((cat) => {
             const isActive = activeCategory === cat;

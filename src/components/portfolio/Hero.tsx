@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, Download, ArrowRight, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { developerInfo } from '@/data/developer';
@@ -40,23 +40,22 @@ export function Hero() {
     >
       {/* Ambient background mesh lighting */}
       <div
-        className="pointer-events-none absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full blur-[150px] opacity-20 dark:opacity-25"
-        style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)' }}
+        className="pointer-events-none absolute -top-72 -left-72 w-[900px] h-[900px] rounded-full opacity-20 dark:opacity-25"
+        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.9) 0%, rgba(59,130,246,0.35) 25%, rgba(59,130,246,0.1) 45%, transparent 65%)' }}
       />
       <div
-        className="pointer-events-none absolute top-1/2 -right-40 w-[550px] h-[550px] rounded-full blur-[150px] opacity-15 dark:opacity-20"
-        style={{ background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)' }}
+        className="pointer-events-none absolute top-1/3 -right-72 w-[850px] h-[850px] rounded-full opacity-15 dark:opacity-20"
+        style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.9) 0%, rgba(139,92,246,0.35) 25%, rgba(139,92,246,0.1) 45%, transparent 65%)' }}
       />
 
       {/* Interactive cursor spotlight */}
+      {/* A fixed-size glow moved with transforms (no full-screen repaint on every mouse move) */}
       <motion.div
-        className="pointer-events-none absolute inset-0 opacity-0 sm:opacity-100 transition-opacity duration-300"
+        className="pointer-events-none absolute left-0 top-0 hidden sm:block w-[1500px] h-[1500px] -ml-[750px] -mt-[750px] rounded-full will-change-transform"
         style={{
-          background: useTransform(
-            [mouseX, mouseY],
-            ([x, y]) =>
-              `radial-gradient(750px circle at ${x}px ${y}px, rgba(59, 130, 246, 0.08), transparent 75%)`
-          ),
+          x: mouseX,
+          y: mouseY,
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.08), transparent 75%)',
         }}
       />
 
@@ -74,7 +73,7 @@ export function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15, duration: 0.5 }}
-              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-secondary/80 border border-border/80 backdrop-blur-md shadow-sm"
+              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-secondary/95 border border-border/80 shadow-sm"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -150,7 +149,7 @@ export function Hero() {
                   size="lg"
                   variant="outline"
                   onClick={scrollToContact}
-                  className="px-7 py-6 text-sm sm:text-base rounded-xl border-border/80 hover:bg-secondary/70 backdrop-blur-sm transition-all cursor-pointer"
+                  className="px-7 py-6 text-sm sm:text-base rounded-xl border-border/80 hover:bg-secondary/85 transition-all cursor-pointer"
                 >
                   Contact Me
                 </Button>

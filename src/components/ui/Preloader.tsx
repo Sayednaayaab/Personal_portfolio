@@ -46,12 +46,12 @@ function SplashScreen({ progress, logIndex, isLoading }: SplashScreenProps) {
     <div className="absolute inset-0 bg-[#07090e] text-foreground flex flex-col items-center justify-center p-6 select-none overflow-hidden">
       {/* Ambient background mesh glow */}
       <div
-        className="absolute w-[500px] h-[500px] rounded-full blur-[140px] opacity-25 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #3b82f6 0%, #06b6d4 40%, transparent 70%)' }}
+        className="absolute w-[800px] h-[800px] rounded-full opacity-25 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.9) 0%, rgba(6,182,212,0.45) 22%, rgba(6,182,212,0.12) 42%, transparent 62%)' }}
       />
       <div
-        className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full blur-[130px] opacity-20 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)' }}
+        className="absolute -bottom-52 -right-52 w-[700px] h-[700px] rounded-full opacity-20 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.9) 0%, rgba(139,92,246,0.3) 25%, rgba(139,92,246,0.08) 45%, transparent 65%)' }}
       />
 
       {/* Cyber Grid Pattern Overlay */}

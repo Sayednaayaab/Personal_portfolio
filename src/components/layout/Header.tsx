@@ -39,29 +39,44 @@ export function Header() {
       return;
     }
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
-
-      if (window.scrollY < 150) {
-        setActiveSection('home');
-        return;
-      }
-
-      for (let i = navLinks.length - 1; i >= 1; i--) {
-        const section = document.getElementById(navLinks[i].id);
-        if (section) {
-          const top = section.offsetTop;
-          if (scrollPosition >= top) {
-            setActiveSection(navLinks[i].id);
-            return;
-          }
-        }
-      }
+    // The browser reports which section crosses a band near the top of the viewport,
+    // so nothing is measured on each scroll frame (no forced layout while animating).
+    const visible = new Set<string>();
+    const pick = () => {
+      // Last nav section (in page order) inside the band wins. Between sections
+      // (e.g. "How I build", which isn't in the nav) keep the previous one.
+      const active = [...navLinks].reverse().find((link) => visible.has(link.id));
+      if (active) setActiveSection(active.id);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        pick();
+      },
+      // Band from 200px below the top to 55% down the screen
+      { rootMargin: '-200px 0px -45% 0px' }
+    );
+
+    // Sections mount lazily after the splash; retry briefly until they exist
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout>;
+    const observeSections = () => {
+      const sections = navLinks.map((link) => document.getElementById(link.id)).filter(Boolean) as HTMLElement[];
+      if (sections.length < navLinks.length && attempts++ < 20) {
+        timer = setTimeout(observeSections, 250);
+      }
+      sections.forEach((section) => observer.observe(section));
+    };
+    observeSections();
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
   }, [location.pathname]);
 
   const handleNavClick = (id: string) => {
@@ -126,7 +141,7 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-secondary/40 backdrop-blur-md border border-border/40">
+            <nav className="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-secondary/55 border border-border/40">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.id;
                 return (
