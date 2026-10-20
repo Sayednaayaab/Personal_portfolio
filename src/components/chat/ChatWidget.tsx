@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUp, Bot, MessageCircle, RotateCcw, X } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
@@ -127,6 +127,8 @@ export function ChatWidget() {
   const [error, setError] = useState('');
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const openChat = useCallback(() => setOpen(true), []);
+  const closeChat = useCallback(() => setOpen(false), []);
 
   // Remember the conversation for this browser session
   useEffect(() => {
@@ -147,9 +149,9 @@ export function ChatWidget() {
   }, [open]);
 
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = () => openChat();
     const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') closeChat();
     };
     window.addEventListener(OPEN_CHAT_EVENT, onOpen);
     window.addEventListener('keydown', onKey);
@@ -157,7 +159,7 @@ export function ChatWidget() {
       window.removeEventListener(OPEN_CHAT_EVENT, onOpen);
       window.removeEventListener('keydown', onKey);
     };
-  }, []);
+  }, [openChat, closeChat]);
 
   const send = async (text: string, history: ChatMessage[] = messages) => {
     const question = text.trim().slice(0, MAX_INPUT);
@@ -247,7 +249,7 @@ export function ChatWidget() {
         {!open && (
           <motion.button
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={openChat}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -300,7 +302,7 @@ export function ChatWidget() {
               </button>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={closeChat}
                 className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
                 aria-label="Close assistant"
               >
@@ -432,6 +434,7 @@ export function ChatWidget() {
           </motion.section>
         )}
       </AnimatePresence>
+
     </>
   );
 }

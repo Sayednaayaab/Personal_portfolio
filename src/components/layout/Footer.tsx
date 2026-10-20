@@ -80,6 +80,22 @@ export function Footer() {
         <div className="mt-10 pt-6 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
           <p>© {currentYear} {developerInfo.name}. All rights reserved.</p>
           <p className="font-mono">Engineered with React, TypeScript & Tailwind CSS</p>
+          <p className="text-[11px] opacity-70">
+            Splash character: "Male Character in Suit" by{' '}
+            <a
+              href="https://sketchfab.com/3d-models/male-character-in-suit-14d3dd2000cf46cca34a4f5fc621ce74"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-foreground"
+            >
+              sthaarpit
+            </a>{' '}
+            (
+            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">
+              CC BY 4.0
+            </a>
+            )
+          </p>
         </div>
       </div>
     </footer>

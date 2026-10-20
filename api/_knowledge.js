@@ -12,7 +12,7 @@ export const CHUNKS = [
   {
     "id": "project-index",
     "title": "All projects (titles)",
-    "text": "- GeeLo — Odoo Communication App (company project, Mobile App)\n- Airline IRROPS Passenger Management (company project, Aviation)\n- B2B Transport & Fleet Management (company project, Logistics)\n- Vivid Commerce Website (personal project, E-commerce)\n- Health Care Website (personal project, Healthcare)\n- Resume Builder & Analyzer Website (personal project, Productivity)\n- Gym Guide Website (personal project, Fitness)\n- Farmers Friend Website (personal project, Agriculture)",
+    "text": "- GeeLo — Odoo Communication App (company project, Mobile App)\n- Airline IRROPS Passenger Management (company project, Aviation)\n- B2B Transport & Fleet Management (company project, Logistics)\n- Vivid Commerce Website (personal project, E-commerce)\n- Health Care Website (personal project, Healthcare)\n- Resume Builder & Analyzer Website (personal project, Productivity)\n- Gym Guide Website (personal project, Fitness)\n- MM Rentals — Real Estate & Rental Portal (company project, Real Estate)\n- Farmers Friend Website (personal project, Agriculture)",
     "keywords": [],
     "always": true
   },
@@ -101,7 +101,7 @@ export const CHUNKS = [
   {
     "id": "skills",
     "title": "Skills and tech stack",
-    "text": "- frontend: React.js, TypeScript, JavaScript, HTML/CSS, Tailwind CSS, Next.js\n- backend: Python, Odoo, Express.js, Node.js, Flask, Django, FastAPI, Firebase\n- mobile: Java, Kotlin, React Native, Flutter, Dart\n- tools: GitHub, Figma, n8n, LLMs, RAG, Vercel, Traccar",
+    "text": "- frontend: React.js, TypeScript, JavaScript, HTML/CSS, Tailwind CSS, Next.js\n- backend: Python, Odoo, Express.js, Node.js, Flask, Django, FastAPI, Firebase\n- mobile: Java, Kotlin, React Native, Flutter, Dart\n- tools: GitHub, Figma, n8n, LLMs, RAG, Docker, Vercel, Traccar",
     "keywords": [
       "skill",
       "skills",
@@ -186,6 +186,8 @@ export const CHUNKS = [
       "llms",
       "rag",
       "rag",
+      "docker",
+      "docker",
       "vercel",
       "vercel",
       "traccar",
@@ -433,6 +435,41 @@ export const CHUNKS = [
       "tailwindcss",
       "typescript",
       "vercel"
+    ],
+    "always": false
+  },
+  {
+    "id": "project-mm-rentals",
+    "title": "MM Rentals — Real Estate & Rental Portal (company project; private, no public demo or code; Real Estate)",
+    "text": "Built a real estate and rental platform for an external client. The main portal lists land for sale and shops, houses and apartments available for lease or rent. Listings are managed by the client through a separate admin portal: when an admin posts a property, the ad is created automatically on the main portal. Built with React and Supabase.\nTech: React, Supabase.\nHighlights: Built for an external real estate and rental client; Listings for land for sale, shops, houses and apartments for lease or rent; Admin portal for posting and managing properties; Ads posted by the admin are created on the main portal.\nSystem overview: Admin portal -> Supabase backend -> Main portal (React) -> Property ads.\nLinks: live demo: https://mmrentals.vercel.app/.",
+    "keywords": [
+      "project",
+      "projects",
+      "built",
+      "build",
+      "made",
+      "portfolio",
+      "demo",
+      "app",
+      "website",
+      "work",
+      "example",
+      "company",
+      "professional",
+      "client",
+      "office",
+      "geelani",
+      "private",
+      "industry",
+      "mm",
+      "rentals",
+      "real",
+      "estate",
+      "rental",
+      "portal",
+      "real estate",
+      "react",
+      "supabase"
     ],
     "always": false
   },

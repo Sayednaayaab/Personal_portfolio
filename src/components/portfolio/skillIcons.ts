@@ -3,6 +3,7 @@ import { BrainCircuit, DatabaseZap } from 'lucide-react';
 import { FaJava } from 'react-icons/fa6';
 import {
   SiDart,
+  SiDocker,
   SiDjango,
   SiExpress,
   SiFastapi,
@@ -62,6 +63,7 @@ export const skillIcons: Record<string, SkillIcon> = {
   n8n: { icon: SiN8N, color: '#EA4B71' },
   LLMs: { icon: BrainCircuit, color: '#A78BFA' },
   RAG: { icon: DatabaseZap, color: '#22D3EE' },
+  Docker: { icon: SiDocker, color: '#2496ED' },
   Vercel: { icon: SiVercel },
   Traccar: { icon: SiTraccar, color: '#4C8BF5' },
 };

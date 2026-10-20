@@ -1,7 +1,41 @@
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { lazy, Suspense, useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { Terminal } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
+import { MoonwalkEmployee } from './MoonwalkEmployee';
+
+// The 3D character (three.js) is a separate chunk. If it can't load, the 2D character takes over.
+type Walker3DProps = import('react').ComponentProps<typeof import('./MoonwalkEmployee3D').default>;
+function WalkerLoadFailed({ onFail }: Walker3DProps) {
+  useEffect(() => onFail?.(), [onFail]);
+  return null;
+}
+type AvatarProps = import('react').ComponentProps<typeof import('./MoonwalkAvatar3D').default>;
+function AvatarLoadFailed({ onFail }: AvatarProps) {
+  useEffect(() => onFail?.(), [onFail]);
+  return null;
+}
+// Preferred: the realistic rigged character with the motion-capture moonwalk (GLB)
+const MoonwalkAvatar3D = lazy(() =>
+  import('./MoonwalkAvatar3D').catch(() => ({ default: AvatarLoadFailed as typeof import('./MoonwalkAvatar3D').default }))
+);
+const MoonwalkEmployee3D = lazy(() =>
+  import('./MoonwalkEmployee3D').catch(() => ({ default: WalkerLoadFailed as typeof import('./MoonwalkEmployee3D').default }))
+);
+
+// Start fetching the 3D chunk as soon as the splash module loads
+if (typeof window !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  void import('./MoonwalkAvatar3D').catch(() => undefined);
+  void import('./MoonwalkEmployee3D').catch(() => undefined);
+  // Warm the HTTP cache with the character model while the splash starts
+  void fetch('/models/suit-man.glb').catch(() => undefined);
+}
+
+interface TrackRect {
+  left: number;
+  width: number;
+  barTop: number;
+}
 
 interface PreloaderProps {
   /** Called when the reveal begins, so the site can mount and animate in underneath */
@@ -16,8 +50,8 @@ interface PreloaderProps {
  */
 type Phase = 'loading' | 'charge' | 'seam' | 'open';
 
-// Whole sequence is ~2 seconds: 1s loading + 0.22s charge + 0.18s seam + 0.65s doors
-const LOADING_MS = 1000;
+// Whole sequence is ~4.3 seconds: 3.2s loading + 0.22s charge + 0.18s seam + 0.65s doors
+const LOADING_MS = 3200;
 const CHARGE_MS = 220;
 const SEAM_MS = 180;
 const DOORS_MS = 650;
@@ -36,10 +70,12 @@ interface SplashScreenProps {
   progress: number;
   logIndex: number;
   isLoading: boolean;
+  /** Show the 2D character (reduced motion is handled by hiding it; this is for when 3D is unavailable) */
+  showFallbackWalker: boolean;
 }
 
 /** The full splash screen. Rendered once per door, each clipped to its half. */
-function SplashScreen({ progress, logIndex, isLoading }: SplashScreenProps) {
+function SplashScreen({ progress, logIndex, isLoading, showFallbackWalker }: SplashScreenProps) {
   const fadeOut = { opacity: isLoading ? 1 : 0, y: isLoading ? 0 : 10 };
 
   return (
@@ -129,11 +165,15 @@ function SplashScreen({ progress, logIndex, isLoading }: SplashScreenProps) {
             </span>
           </div>
 
-          <div className="w-full h-1 bg-secondary/80 rounded-full overflow-hidden border border-border/40 relative">
-            <div
-              className="h-full bg-gradient-to-r from-primary via-accent to-emerald-400 rounded-full"
-              style={{ width: `${progress}%` }}
-            />
+          {/* The employee moonwalks along the bar as it fills, so the bar's wrapper leaves room above it */}
+          <div className="relative pt-[172px] sm:pt-[196px]">
+            {showFallbackWalker && <MoonwalkEmployee progress={progress} />}
+            <div data-moonwalk-bar className="w-full h-1 bg-secondary/80 rounded-full overflow-hidden border border-border/40 relative">
+              <div
+                className="h-full bg-gradient-to-r from-primary via-accent to-emerald-400 rounded-full"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
 
           <div className="h-6 flex items-center justify-center">
@@ -171,6 +211,34 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
   const [logIndex, setLogIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('loading');
   const reduceMotion = useReducedMotion();
+  const [walker, setWalker] = useState<'avatar' | '3d' | 'fallback'>('avatar');
+  const [track, setTrack] = useState<TrackRect | null>(null);
+  const handleAvatarFail = useCallback(() => setWalker('3d'), []);
+  const handleWalkerFail = useCallback(() => setWalker('fallback'), []);
+
+  // Measure the loading bar so the 3D character can be laid over it
+  useLayoutEffect(() => {
+    const bar = document.querySelector('[data-moonwalk-bar]');
+    if (!bar) return;
+    const measure = () => {
+      const r = bar.getBoundingClientRect();
+      setTrack((prev) =>
+        prev && Math.abs(prev.left - r.left) < 0.5 && Math.abs(prev.width - r.width) < 0.5 && Math.abs(prev.barTop - r.top) < 0.5
+          ? prev
+          : { left: r.left, width: r.width, barTop: r.top }
+      );
+    };
+    measure();
+    const settle = window.setTimeout(measure, 400); // after web fonts settle
+    const observer = new ResizeObserver(measure);
+    observer.observe(bar);
+    window.addEventListener('resize', measure);
+    return () => {
+      window.clearTimeout(settle);
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
 
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
@@ -295,7 +363,13 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
   }, [progress]);
 
   const isLoading = phase === 'loading';
-  const splash = <SplashScreen progress={progress} logIndex={logIndex} isLoading={isLoading} />;
+  const showFallbackWalker = walker === 'fallback';
+  const splash = <SplashScreen progress={progress} logIndex={logIndex} isLoading={isLoading} showFallbackWalker={showFallbackWalker} />;
+
+  // 3D character overlay: sits on the loading bar, stays through the 'charge' beat, fades before the doors open
+  const figureHeight = track ? Math.round(Math.min(170, Math.max(120, track.width * 0.38))) : 150;
+  const overlayPad = Math.round(figureHeight * 0.45);
+  const overlayHeight = Math.round(figureHeight * 1.3);
   const exit = { opacity: 0, transition: { duration: reduceMotion ? 0.3 : 0.1 } };
 
   return (
@@ -331,6 +405,44 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
           className="absolute inset-y-0 left-1/2 w-[2px] bg-accent opacity-0 shadow-[0_0_24px_4px_rgba(34,211,238,0.6)]"
         />
       </motion.div>
+
+      {/* Cinematic 3D employee moonwalking along the bar (above both doors, below the seam) */}
+      {(walker === 'avatar' || walker === '3d') && track && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed z-[9999] transition-opacity duration-200"
+          style={{
+            left: track.left - overlayPad,
+            width: track.width + overlayPad * 2,
+            height: overlayHeight,
+            top: track.barTop - overlayHeight + 2,
+            opacity: phase === 'loading' || phase === 'charge' ? 1 : 0,
+            WebkitBoxReflect: 'below 0px linear-gradient(transparent 84%, rgba(255,255,255,0.14))',
+          }}
+        >
+          <Suspense fallback={null}>
+            {walker === 'avatar' ? (
+              <MoonwalkAvatar3D
+                progress={progress}
+                trackStart={overlayPad}
+                trackWidth={track.width}
+                figureHeight={figureHeight}
+                reducedMotion={!!reduceMotion}
+                onFail={handleAvatarFail}
+              />
+            ) : (
+              <MoonwalkEmployee3D
+                progress={progress}
+                trackStart={overlayPad}
+                trackWidth={track.width}
+                figureHeight={figureHeight}
+                reducedMotion={!!reduceMotion}
+                onFail={handleWalkerFail}
+              />
+            )}
+          </Suspense>
+        </div>
+      )}
 
       {/* The seam of light that cracks down the middle before the doors open */}
       <span
