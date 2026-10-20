@@ -5,7 +5,7 @@
 
 export const developerInfo = {
   name: "Sayed Mirchoni",
-  profileImage: '/sayed.jpg',
+  profileImage: '/sayed-hd.webp',
   title: "Full-Stack & Mobile Developer",
   tagline: "Building web and mobile products with React, Flutter and Odoo",
   heroSubtitle: "Building web and mobile products with React, Flutter, Odoo and Python",

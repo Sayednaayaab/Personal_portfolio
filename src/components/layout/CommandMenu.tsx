@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Bot, Briefcase, Code2, Copy, FileDown, FolderGit2, Github, Home, Linkedin, Mail, Sparkles, User } from 'lucide-react';
-import { OPEN_CHAT_EVENT } from '@/components/chat/ChatWidget';
+import { OPEN_CHAT_EVENT, OPEN_PROJECT_EVENT } from '@/lib/events';
 import {
   CommandDialog,
   CommandEmpty,
@@ -18,7 +18,7 @@ import { scrollToId, scrollToTarget } from '@/lib/smoothScroll';
 /** Fired by the header button to open the menu. */
 export const OPEN_COMMAND_MENU = 'open-command-menu';
 /** Fired by the menu to open a project's details panel (handled in ProjectsSection). */
-export const OPEN_PROJECT_EVENT = 'open-project';
+export { OPEN_PROJECT_EVENT };
 
 const sections = [
   { id: 'home', label: 'Home', icon: Home },

@@ -5,7 +5,9 @@ import { developerInfo } from '@/data/developer';
 import { cn } from '@/lib/utils';
 
 /** Fired by the command menu to open the assistant. */
-export const OPEN_CHAT_EVENT = 'open-chat';
+import { OPEN_CHAT_EVENT } from '@/lib/events';
+
+export { OPEN_CHAT_EVENT };
 
 interface ChatMessage {
   role: 'user' | 'assistant';

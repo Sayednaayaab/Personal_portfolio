@@ -107,11 +107,13 @@ export const ProjectCard3D = forwardRef<HTMLDivElement, ProjectCardProps>(functi
         {/* Thumbnail Image Container */}
         <div className="relative h-52 overflow-hidden bg-muted">
           <img
-            src={project.image}
+            src={project.image.replace('w=1200', 'w=720')}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
             decoding="async"
+            width={720}
+            height={416}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
 

@@ -3,7 +3,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { projects, type Project } from '@/data/developer';
 import { ProjectCard3D } from './ProjectCard3D';
 import { ProjectDetailsDialog } from './ProjectDetailsDialog';
-import { OPEN_PROJECT_EVENT } from '@/components/layout/CommandMenu';
+import { OPEN_PROJECT_EVENT } from '@/lib/events';
 import { cn } from '@/lib/utils';
 
 const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)))];

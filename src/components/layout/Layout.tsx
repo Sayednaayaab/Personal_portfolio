@@ -2,8 +2,11 @@ import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { CommandMenu } from './CommandMenu';
-import { ChatWidget } from '@/components/chat/ChatWidget';
+import { lazy, Suspense, useEffect, useState } from 'react';
+
+// Secondary UI loads after the page is interactive, keeping it out of the first paint
+const CommandMenu = lazy(() => import('./CommandMenu').then((m) => ({ default: m.CommandMenu })));
+const ChatWidget = lazy(() => import('@/components/chat/ChatWidget').then((m) => ({ default: m.ChatWidget })));
 import { StarfieldBackground } from './StarfieldBackground';
 
 interface LayoutProps {
@@ -18,6 +21,13 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const isHomepage = location.pathname === '/';
+  const [showExtras, setShowExtras] = useState(false);
+
+  useEffect(() => {
+    const ric = (window as any).requestIdleCallback as undefined | ((cb: () => void, o?: object) => number);
+    const id = ric ? ric(() => setShowExtras(true), { timeout: 3000 }) : window.setTimeout(() => setShowExtras(true), 2000);
+    return () => ((window as any).cancelIdleCallback ?? clearTimeout)(id);
+  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-hidden">
@@ -31,8 +41,12 @@ export function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <Footer />
-      <CommandMenu />
-      <ChatWidget />
+      {showExtras && (
+        <Suspense fallback={null}>
+          <CommandMenu />
+          <ChatWidget />
+        </Suspense>
+      )}
     </div>
   );
 }

@@ -646,3 +646,9 @@ html.lenis, html.lenis body {
     display: none;
   }
 }
+
+/* Skip rendering work for sections that are far off-screen; the reserved height keeps the scrollbar stable */
+#experience, #skills, #about, #contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}

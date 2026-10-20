@@ -15,6 +15,17 @@ export default defineConfig(() => ({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Stable vendor chunks cache across deploys and load in parallel
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          motion: ['framer-motion'],
+        },
+      },
+    },
+  },
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {

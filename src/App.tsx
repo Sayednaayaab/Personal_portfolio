@@ -55,9 +55,19 @@ function AnimatedRoutes() {
 }
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  // The splash plays once per browser session; reloads and revisits go straight to the site
+  const [skipSplash] = useState(() => {
+    try {
+      if (sessionStorage.getItem('splash-seen')) return true;
+      sessionStorage.setItem('splash-seen', '1');
+    } catch {
+      /* storage blocked: just play the splash */
+    }
+    return false;
+  });
+  const [isLoading, setIsLoading] = useState(!skipSplash);
   // Routes mount when the preloader starts revealing, so page intro animations play in view
-  const [isRevealed, setIsRevealed] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(skipSplash);
 
   const handleRevealStart = useCallback(() => setIsRevealed(true), []);
   const handleComplete = useCallback(() => {
@@ -72,9 +82,10 @@ function App() {
 
   // Safety net in case the preloader never reports completion
   useEffect(() => {
+    if (skipSplash) return;
     const timer = setTimeout(handleComplete, 5000);
     return () => clearTimeout(timer);
-  }, [handleComplete]);
+  }, [handleComplete, skipSplash]);
 
   return (
     <ErrorBoundary>
