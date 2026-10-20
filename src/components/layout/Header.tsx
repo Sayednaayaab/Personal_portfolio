@@ -120,10 +120,10 @@ export function Header() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+          'fixed top-0 left-0 right-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-500',
           isScrolled
-            ? 'bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-sm'
-            : 'bg-transparent'
+            ? 'bg-background/75 backdrop-blur-xl border-white/[0.06] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)]'
+            : 'bg-transparent border-transparent'
         )}
       >
         <div className="container-custom">
@@ -137,11 +137,14 @@ export function Header() {
               <div className="p-1.5 rounded-lg bg-primary/10 text-primary group-hover:scale-105 transition-transform">
                 <Briefcase className="size-5" />
               </div>
-              <span className="font-bold tracking-tight">Sayed.dev</span>
+              {/* Neon tube light: flickers on after the splash, then glows with the odd flicker */}
+              <span className="neon-tube font-bold tracking-tight" data-text="Sayed.dev">
+                Sayed.dev
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-secondary/55 border border-border/40">
+            <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 p-1 rounded-full bg-white/[0.03] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.id;
                 return (
@@ -149,14 +152,14 @@ export function Header() {
                     key={link.id}
                     onClick={() => handleNavClick(link.id)}
                     className={cn(
-                      'relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer',
-                      isActive ? 'text-primary-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
+                      'relative px-3 lg:px-4 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer',
+                      isActive ? 'text-white' : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
                     )}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="activeNavIndicator"
-                        className="absolute inset-0 bg-primary rounded-full -z-10 shadow-[0_0_15px_rgba(59,130,246,0.4)]"
+                        className="absolute inset-0 rounded-full bg-gradient-to-b from-primary/90 to-primary/70 ring-1 ring-inset ring-white/15 shadow-[0_0_18px_rgba(59,130,246,0.35)]"
                         transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                       />
                     )}
@@ -171,7 +174,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_MENU))}
-                className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border/80 bg-secondary/40 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors cursor-pointer"
+                className="hidden lg:inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors cursor-pointer"
                 aria-label="Open quick menu (Ctrl+K)"
               >
                 <Search className="size-3.5" />
@@ -180,7 +183,7 @@ export function Header() {
               <Button
                 size="sm"
                 onClick={() => handleNavClick('contact')}
-                className="cursor-pointer shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_25px_rgba(59,130,246,0.45)] transition-shadow"
+                className="cursor-pointer rounded-full px-5 text-white font-semibold bg-gradient-to-b from-primary to-primary/80 ring-1 ring-inset ring-white/15 shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_25px_rgba(59,130,246,0.45)] transition-shadow"
               >
                 Hire Me
               </Button>
@@ -190,7 +193,7 @@ export function Header() {
             <div className="md:hidden flex items-center gap-2">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="Open menu">
+                  <Button variant="ghost" size="icon" aria-label="Open menu" className="rounded-full border border-white/[0.08] bg-white/[0.03]">
                     <Menu className="size-5" />
                   </Button>
                 </SheetTrigger>
@@ -203,7 +206,7 @@ export function Header() {
                         className={cn(
                           'text-xl font-medium text-left py-2 px-3 rounded-lg transition-colors cursor-pointer',
                           activeSection === link.id
-                            ? 'bg-primary/10 text-primary font-bold'
+                            ? 'bg-primary/15 text-white font-semibold ring-1 ring-inset ring-primary/30'
                             : 'text-muted-foreground hover:text-foreground'
                         )}
                       >
@@ -211,7 +214,7 @@ export function Header() {
                       </button>
                     ))}
                     <div className="pt-4 border-t border-border">
-                      <Button onClick={() => handleNavClick('contact')} className="w-full">
+                      <Button onClick={() => handleNavClick('contact')} className="w-full text-white font-semibold">
                         Hire Me
                       </Button>
                     </div>

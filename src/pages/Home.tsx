@@ -10,8 +10,11 @@ const AboutSection = lazy(() => import('@/components/portfolio/AboutSection').th
 const ContactSection = lazy(() => import('@/components/portfolio/ContactSection').then((m) => ({ default: m.ContactSection })));
 import { SEOHead } from '@/components/seo/SEOHead';
 import { developerInfo } from '@/data/developer';
+import { usePauseOffscreenAnimations } from '@/hooks/usePauseOffscreenAnimations';
 
 export default function Home() {
+  usePauseOffscreenAnimations();
+
   return (
     <>
       <SEOHead

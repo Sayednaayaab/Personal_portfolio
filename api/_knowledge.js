@@ -12,7 +12,7 @@ export const CHUNKS = [
   {
     "id": "project-index",
     "title": "All projects (titles)",
-    "text": "- GeeLo — Odoo Communication App (company project, Mobile App)\n- Airline IRROPS Passenger Management (company project, Aviation)\n- B2B Transport & Fleet Management (company project, Logistics)\n- Vivid Commerce Website (personal project, E-commerce)\n- Health Care Website (personal project, Healthcare)\n- Resume Builder & Analyzer Website (personal project, Productivity)\n- Gym Guide Website (personal project, Fitness)\n- MM Rentals — Real Estate & Rental Portal (company project, Real Estate)\n- Farmers Friend Website (personal project, Agriculture)",
+    "text": "- GeeLo — Odoo Communication App (company project, Mobile App)\n- Airline IRROPS Passenger Management (company project, Aviation)\n- B2B Transport & Fleet Management (company project, Logistics)\n- Vivid Commerce Website (personal project, E-commerce)\n- Health Care Website (personal project, Healthcare)\n- Resume Builder & Analyzer Website (personal project, Productivity)\n- Gym Guide Website (personal project, Fitness)\n- MM Rentals — Real Estate & Rental Portal (company project, Real Estate)\n- Gym Management App (company project, Mobile App)\n- Farmers Friend Website (personal project, Agriculture)",
     "keywords": [],
     "always": true
   },
@@ -470,6 +470,38 @@ export const CHUNKS = [
       "real estate",
       "react",
       "supabase"
+    ],
+    "always": false
+  },
+  {
+    "id": "project-gym-management-app",
+    "title": "Gym Management App (company project; private, no public demo or code; Mobile App)",
+    "text": "Built a gym management mobile app for an external client with React Native and Firebase. Staff register new members with their personal details and assign a membership plan. The app tracks each membership's expiry, flags members whose plans are about to run out, and lets staff renew the same plan or reassign a different one, keeping the member's full history. Member data lives in Firebase, so it stays in sync across the gym's devices.\nTech: React Native, Firebase.\nHighlights: Built for an external gym client; Member registration with personal details; Membership plans with expiry tracking; Renew a plan or reassign a new one on expiry; Data synced across devices with Firebase.\nSystem overview: React Native app -> Firebase Auth -> Firestore (members & plans) -> Expiry tracking -> Renew / reassign.",
+    "keywords": [
+      "project",
+      "projects",
+      "built",
+      "build",
+      "made",
+      "portfolio",
+      "demo",
+      "app",
+      "website",
+      "work",
+      "example",
+      "company",
+      "professional",
+      "client",
+      "office",
+      "geelani",
+      "private",
+      "industry",
+      "gym",
+      "management",
+      "app",
+      "mobile app",
+      "react native",
+      "firebase"
     ],
     "always": false
   },

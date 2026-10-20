@@ -102,7 +102,8 @@ export function HeroPortal3D() {
               width={586}
               height={732}
               decoding="async"
-              fetchPriority="high"
+              // React 18 only passes the lowercase attribute through to the DOM
+              {...{ fetchpriority: 'high' }}
               className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
             />
             

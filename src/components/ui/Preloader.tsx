@@ -3,6 +3,7 @@ import { lazy, Suspense, useState, useEffect, useLayoutEffect, useRef, useCallba
 import { Terminal } from 'lucide-react';
 import { developerInfo } from '@/data/developer';
 import { MoonwalkEmployee } from './MoonwalkEmployee';
+import { loadAvatarBuffer } from './avatarAsset';
 
 // The 3D character (three.js) is a separate chunk. If it can't load, the 2D character takes over.
 type Walker3DProps = import('react').ComponentProps<typeof import('./MoonwalkEmployee3D').default>;
@@ -27,8 +28,8 @@ const MoonwalkEmployee3D = lazy(() =>
 if (typeof window !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   void import('./MoonwalkAvatar3D').catch(() => undefined);
   void import('./MoonwalkEmployee3D').catch(() => undefined);
-  // Warm the HTTP cache with the character model while the splash starts
-  void fetch('/models/suit-man.glb').catch(() => undefined);
+  // Start downloading the character model now; the avatar reuses this same download
+  void loadAvatarBuffer().catch(() => undefined);
 }
 
 interface TrackRect {
@@ -55,6 +56,10 @@ const LOADING_MS = 3200;
 const CHARGE_MS = 220;
 const SEAM_MS = 180;
 const DOORS_MS = 650;
+// The bar holds at 0 until the character is on screen, but never waits longer than this
+const MAX_WALKER_WAIT_MS = 2600;
+// Length of the 2D character's fade-in (matches .walker-in in index.css)
+const WALKER_FADE_MS = 520;
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_DOORS = 'cubic-bezier(0.76, 0, 0.24, 1)';
 
@@ -104,23 +109,26 @@ function SplashScreen({ progress, logIndex, isLoading, showFallbackWalker }: Spl
       <div className="relative z-10 flex flex-col items-center max-w-md w-full text-center space-y-8">
         {/* Animated Brand Monogram Orb */}
         <div className="relative flex items-center justify-center">
-          {/* Outer rotating neon ring */}
+          {/* Outer rotating neon ring. The endless spin and pulse are CSS animations (run on the GPU);
+              framer-motion only handles the one-off exit on the wrapper */}
           <motion.div
-            animate={{ rotate: 360, opacity: isLoading ? 1 : 0, scale: isLoading ? 1 : 1.4 }}
-            transition={{
-              rotate: { repeat: Infinity, duration: 6, ease: 'linear' },
-              opacity: { duration: 0.35 },
-              scale: { duration: 0.4, ease: EASE_OUT },
-            }}
-            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border border-dashed border-primary/40 p-1"
-          />
+            animate={{ opacity: isLoading ? 1 : 0, scale: isLoading ? 1 : 1.4 }}
+            transition={{ opacity: { duration: 0.35 }, scale: { duration: 0.4, ease: EASE_OUT } }}
+            className="w-24 h-24 sm:w-28 sm:h-28"
+          >
+            <div className="splash-spin h-full w-full rounded-full border border-dashed border-primary/40" />
+          </motion.div>
 
           {/* Inner pulsating glow ring */}
           <motion.div
-            animate={isLoading ? { scale: [1, 1.08, 1], opacity: [0.6, 0.9, 0.6] } : { scale: 1.6, opacity: 1 }}
-            transition={isLoading ? { repeat: Infinity, duration: 2, ease: 'easeInOut' } : { duration: 0.4, ease: EASE_OUT }}
-            className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-primary/30 via-accent/20 to-purple-500/30 blur-md"
-          />
+            animate={{ scale: isLoading ? 1 : 1.6 }}
+            transition={{ duration: 0.4, ease: EASE_OUT }}
+            className="absolute w-20 h-20 sm:w-24 sm:h-24"
+          >
+            <div
+              className={`h-full w-full rounded-full bg-gradient-to-tr from-primary/30 via-accent/20 to-purple-500/30 blur-md ${isLoading ? 'splash-pulse' : ''}`}
+            />
+          </motion.div>
 
           {/* Core Monogram: charges up when loading completes */}
           <motion.div
@@ -169,9 +177,11 @@ function SplashScreen({ progress, logIndex, isLoading, showFallbackWalker }: Spl
           <div className="relative pt-[172px] sm:pt-[196px]">
             {showFallbackWalker && <MoonwalkEmployee progress={progress} />}
             <div data-moonwalk-bar className="w-full h-1 bg-secondary/80 rounded-full overflow-hidden border border-border/40 relative">
+              {/* Driven by the --load variable every frame (no React render, no layout), so it glides */}
               <div
-                className="h-full bg-gradient-to-r from-primary via-accent to-emerald-400 rounded-full"
-                style={{ width: `${progress}%` }}
+                data-load
+                className="h-full w-full origin-left bg-gradient-to-r from-primary via-accent to-emerald-400 rounded-full"
+                style={{ transform: 'scaleX(var(--load, 0))' }}
               />
             </div>
           </div>
@@ -207,14 +217,49 @@ function SplashScreen({ progress, logIndex, isLoading, showFallbackWalker }: Spl
 }
 
 export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
-  const [progress, setProgress] = useState(1);
+  const [progress, setProgress] = useState(0);
   const [logIndex, setLogIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('loading');
   const reduceMotion = useReducedMotion();
   const [walker, setWalker] = useState<'avatar' | '3d' | 'fallback'>('avatar');
   const [track, setTrack] = useState<TrackRect | null>(null);
+  // The loading clock starts once the character is visible, so it always walks on from 0%
+  const [walkerReady, setWalkerReady] = useState(false);
+  const readyRef = useRef(false);
+  // Give the canvas's fade-in a moment so the figure is fully visible when it starts walking
+  // The 3D figures call this when their fade-in has finished
+  const handleWalkerReady = useCallback(() => {
+    readyRef.current = true;
+    setWalkerReady(true);
+  }, []);
   const handleAvatarFail = useCallback(() => setWalker('3d'), []);
-  const handleWalkerFail = useCallback(() => setWalker('fallback'), []);
+  const startWithFallback = useCallback(() => {
+    readyRef.current = true;
+    setWalker('fallback');
+    window.setTimeout(() => setWalkerReady(true), WALKER_FADE_MS);
+  }, []);
+  const handleWalkerFail = startWithFallback;
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setWalkerReady(true);
+      return;
+    }
+    // Slow connection: switch to the lightweight 2D character instead of letting the 3D one pop in mid-bar
+    const timer = setTimeout(() => {
+      if (!readyRef.current) startWithFallback();
+    }, MAX_WALKER_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, [reduceMotion, startWithFallback]);
+
+  // The bar and 2D character read the exact fraction from a --load variable set every frame on just
+  // those elements ([data-load]), so only they restyle: no React render, no page-wide style recalc
+  const loadRef = useRef(0);
+  const setLoad = useCallback((value: number) => {
+    if (value <= loadRef.current) return;
+    loadRef.current = value;
+    document.querySelectorAll<HTMLElement>('[data-load]').forEach((el) => el.style.setProperty('--load', String(value)));
+  }, []);
 
   // Measure the loading bar so the 3D character can be laid over it
   useLayoutEffect(() => {
@@ -240,6 +285,16 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
     };
   }, []);
 
+  // While the splash covers the screen, the site's background animations pause (see StarfieldBackground)
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    if (phase === 'loading' || phase === 'charge') root.dataset.splash = 'on';
+    else delete root.dataset.splash;
+    return () => {
+      delete root.dataset.splash;
+    };
+  }, [phase]);
+
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
   const seamRef = useRef<HTMLSpanElement>(null);
@@ -252,6 +307,7 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
   useEffect(() => {
     if (phase !== 'loading') return;
     const skip = () => {
+      setLoad(1);
       setProgress(100);
       setLogIndex(4);
       setPhase('charge');
@@ -265,12 +321,14 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
   }, [phase]);
 
   useEffect(() => {
+    if (!walkerReady) return;
     const startTime = performance.now();
     let rafId: number;
 
     const tick = (currentTime: number) => {
       const progressFraction = Math.min(1, (currentTime - startTime) / LOADING_MS);
-      setProgress(Math.max(1, Math.min(100, Math.floor(progressFraction * 100))));
+      setLoad(progressFraction);
+      setProgress((current) => Math.max(current, Math.min(100, Math.floor(progressFraction * 100))));
 
       if (progressFraction < 1) rafId = requestAnimationFrame(tick);
       else setPhase((current) => (current === 'loading' ? 'charge' : current));
@@ -278,7 +336,7 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, []);
+  }, [walkerReady]);
 
   // Charge: UI clears and the logo glows. Mount the site now, hidden behind the doors,
   // so its heavy first render is done before they open.
@@ -429,6 +487,7 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
                 figureHeight={figureHeight}
                 reducedMotion={!!reduceMotion}
                 onFail={handleAvatarFail}
+                onReady={handleWalkerReady}
               />
             ) : (
               <MoonwalkEmployee3D
@@ -438,6 +497,7 @@ export function Preloader({ onRevealStart, onComplete }: PreloaderProps) {
                 figureHeight={figureHeight}
                 reducedMotion={!!reduceMotion}
                 onFail={handleWalkerFail}
+                onReady={handleWalkerReady}
               />
             )}
           </Suspense>

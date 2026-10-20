@@ -72,7 +72,7 @@ function App() {
 
   // Safety net in case the preloader never reports completion
   useEffect(() => {
-    const timer = setTimeout(handleComplete, 5000);
+    const timer = setTimeout(handleComplete, 8000);
     return () => clearTimeout(timer);
   }, [handleComplete]);
 

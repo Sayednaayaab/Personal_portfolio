@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { loadAvatarBuffer } from './avatarAsset';
 
 /**
  * The real character: a rigged, realistic man in a black suit ("Male Character in Suit" by sthaarpit,
@@ -16,7 +17,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
  * One transparent canvas over the loading bar, 1 world unit = 1 px.
  */
 
-export const AVATAR_URL = '/models/suit-man.glb';
+export { AVATAR_URL } from './avatarAsset';
 
 interface MoonwalkAvatar3DProps {
   progress: number;
@@ -27,6 +28,8 @@ interface MoonwalkAvatar3DProps {
   debug?: boolean;
   reducedMotion?: boolean;
   onFail?: () => void;
+  /** Called once the character has been drawn for the first time */
+  onReady?: () => void;
 }
 
 // Measured from the clip, per frame (1-32): how fast the planted foot (the one moving forward relative to the
@@ -50,12 +53,14 @@ const smooth = (v: number) => {
 };
 
 
-export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, figureHeight, yaw = 0.38, debug = false, reducedMotion = false, onFail }: MoonwalkAvatar3DProps) {
+export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, figureHeight, yaw = 0.38, debug = false, reducedMotion = false, onFail, onReady }: MoonwalkAvatar3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const live = useRef({ progress, trackStart, trackWidth, figureHeight, yaw, reducedMotion });
   live.current = { progress, trackStart, trackWidth, figureHeight, yaw, reducedMotion };
   const failRef = useRef(onFail);
   failRef.current = onFail;
+  const readyRef = useRef(onReady);
+  readyRef.current = onReady;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -68,11 +73,12 @@ export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, fig
       failRef.current?.();
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // Touch screens get a lower pixel ratio: the figure is small and phones are fill-rate bound
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(pointer: coarse)').matches ? 1.5 : 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.3;
     renderer.setClearColor(0x000000, 0);
-    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;opacity:0;transition:opacity .35s ease';
+    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;opacity:0';
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -136,6 +142,7 @@ export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, fig
     let frameId = 0;
     let lastTime = 0;
     let ready = false;
+    let announced = false;
     let model: THREE.Group;
     let mixer: THREE.AnimationMixer;
     let action: THREE.AnimationAction;
@@ -156,8 +163,9 @@ export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, fig
     };
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
-    loader.load(
-      AVATAR_URL,
+    loadAvatarBuffer().then((buffer) => loader.parse(
+      buffer,
+      '',
       (gltf) => {
         if (disposed) return;
         model = gltf.scene;
@@ -184,14 +192,21 @@ export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, fig
         action = mixer.clipAction(clip);
         action.play();
         action.paused = false;
-        renderer.domElement.style.opacity = '1';
-        ready = true;
+        // Compile the shaders before the first visible frame (in parallel where the GPU driver allows),
+        // so the fade-in never stalls on a phone
+        const compiled = renderer.compileAsync
+          ? renderer.compileAsync(scene, camera)
+          : Promise.resolve(renderer.compile(scene, camera));
+        compiled.catch(() => undefined).then(() => {
+          if (!disposed) ready = true;
+        });
       },
-      undefined,
       () => {
         if (!disposed) failRef.current?.();
       }
-    );
+    )).catch(() => {
+      if (!disposed) failRef.current?.();
+    });
 
     const pose = (time: number, dt: number) => {
       const { progress: p, trackStart: t0, trackWidth: tw, figureHeight: H, yaw: yawNow, reducedMotion: still } = live.current;
@@ -263,6 +278,18 @@ export default function MoonwalkAvatar3D({ progress, trackStart, trackWidth, fig
       lastTime = now;
       pose(now / 1000, dt);
       renderer.render(scene, camera);
+      if (ready && !announced) {
+        announced = true;
+        // Fade and rise in on the compositor; the loading clock starts once the figure is fully visible
+        const fade = renderer.domElement.animate(
+          [
+            { opacity: 0, transform: 'translateY(10px)' },
+            { opacity: 1, transform: 'none' },
+          ],
+          { duration: 520, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        );
+        fade.finished.then(() => { if (!disposed) readyRef.current?.(); }).catch(() => undefined);
+      }
     };
     const start = () => {
       cancelAnimationFrame(frameId);

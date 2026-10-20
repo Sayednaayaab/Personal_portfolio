@@ -44,11 +44,14 @@ export function MoonwalkEmployee({ progress }: MoonwalkEmployeeProps) {
   const swing = Math.sin(phase) * 8;
 
   return (
+    // Moved along the bar with a transform read from --load (set every frame by the splash), not `left`
     <div
-      className="pointer-events-none absolute bottom-[3px] z-20 h-[112px] w-[80px] -translate-x-1/2"
-      style={{ left: `${progress}%` }}
+      data-load
+      className="pointer-events-none absolute inset-x-0 bottom-[3px] z-20 h-[112px]"
+      style={{ transform: 'translateX(calc(var(--load, 0) * 100%))' }}
       aria-hidden="true"
     >
+      <div className="walker-in absolute left-0 top-0 h-full w-[80px] -translate-x-1/2">
       <svg viewBox="0 0 64 90" className="h-full w-full overflow-visible">
         {/* floor shadow */}
         <ellipse cx="30" cy="85" rx="20" ry="2.6" fill="rgba(0,0,0,0.4)" />
@@ -90,6 +93,7 @@ export function MoonwalkEmployee({ progress }: MoonwalkEmployeeProps) {
           </g>
         </g>
       </svg>
+      </div>
     </div>
   );
 }

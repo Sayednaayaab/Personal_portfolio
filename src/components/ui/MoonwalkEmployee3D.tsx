@@ -42,6 +42,8 @@ interface MoonwalkEmployee3DProps {
   reducedMotion?: boolean;
   /** Called when WebGL is unavailable so the caller can show a fallback */
   onFail?: () => void;
+  /** Called once the character has been drawn for the first time */
+  onReady?: () => void;
 }
 
 // Gait tuning (lengths are fractions of the figure's height)
@@ -282,13 +284,15 @@ function buildEmployee() {
   return { root, pelvis, spine, chest, neck, head, legs, arms, caseSwing, tiePivot, materials };
 }
 
-export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, figureHeight, yaw = 0.38, debug = false, reducedMotion = false, onFail }: MoonwalkEmployee3DProps) {
+export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, figureHeight, yaw = 0.38, debug = false, reducedMotion = false, onFail, onReady }: MoonwalkEmployee3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // The render loop reads these every frame without restarting the scene
   const live = useRef({ progress, trackStart, trackWidth, figureHeight, yaw, reducedMotion });
   live.current = { progress, trackStart, trackWidth, figureHeight, yaw, reducedMotion };
   const failRef = useRef(onFail);
   failRef.current = onFail;
+  const readyRef = useRef(onReady);
+  readyRef.current = onReady;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -301,11 +305,12 @@ export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, f
       failRef.current?.();
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // Touch screens get a lower pixel ratio: the figure is small and phones are fill-rate bound
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(pointer: coarse)').matches ? 1.5 : 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
     renderer.setClearColor(0x000000, 0);
-    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block';
+    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;opacity:0';
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -379,6 +384,7 @@ export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, f
     };
     let lastTime = 0;
     let frameId = 0;
+    let disposed = false;
 
     // Critically damped follow (smooth acceleration and deceleration, no overshoot)
     const smoothDamp = (current: number, target: number, vel: number, smoothTime: number, dt: number) => {
@@ -585,6 +591,7 @@ export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, f
       }
     };
 
+    let announced = false;
     const loop = (now: number) => {
       frameId = requestAnimationFrame(loop);
       if (!width || !height) return;
@@ -592,6 +599,18 @@ export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, f
       lastTime = now;
       pose(now / 1000, dt);
       renderer.render(scene, camera);
+      if (!announced) {
+        announced = true;
+        // Fade and rise in on the compositor; the loading clock starts once the figure is fully visible
+        const fade = renderer.domElement.animate(
+          [
+            { opacity: 0, transform: 'translateY(10px)' },
+            { opacity: 1, transform: 'none' },
+          ],
+          { duration: 520, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        );
+        fade.finished.then(() => { if (!disposed) readyRef.current?.(); }).catch(() => undefined);
+      }
     };
     const start = () => {
       cancelAnimationFrame(frameId);
@@ -607,6 +626,7 @@ export default function MoonwalkEmployee3D({ progress, trackStart, trackWidth, f
     start();
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(frameId);
       document.removeEventListener('visibilitychange', onVisibility);
       observer.disconnect();

@@ -212,6 +212,11 @@ export function StarfieldBackground() {
     const loop = (time: number) => {
       frameId = requestAnimationFrame(loop);
       if (minFrameMs && lastTime && time - lastTime < minFrameMs - 1) return;
+      // Hidden under the splash screen: skip drawing so the splash gets the whole frame budget
+      if (root.dataset.splash) {
+        lastTime = 0;
+        return;
+      }
       // Normalised to 60fps steps so motion speed is the same at any refresh rate
       const dt = lastTime ? Math.min((time - lastTime) / 16.67, 3) : 1;
       lastTime = time;
