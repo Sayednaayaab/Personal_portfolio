@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://personal-portfolio-7dqj.vercel.app/sitemap.xml
+Sitemap: https://sayedmirchoni-portfolio.vercel.app/sitemap.xml

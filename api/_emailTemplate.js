@@ -3,7 +3,7 @@
 // Email clients ignore <style> blocks and modern CSS, so everything is
 // table-based with inline styles.
 
-const PORTFOLIO_URL = 'https://personal-portfolio-7dqj.vercel.app/';
+const PORTFOLIO_URL = 'https://sayedmirchoni-portfolio.vercel.app/';
 const OWNER_NAME = 'Sayed Mirchoni';
 
 // Colors taken from the portfolio's dark theme (src/index.css)

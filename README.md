@@ -2,7 +2,7 @@
 
 Personal portfolio of **Sayed Mirchoni**, a full-stack and mobile developer from Karnataka, India, and a 2026 Computer Science graduate. I build web and mobile products with React, Flutter, Odoo and Python.
 
-**Live site:** https://personal-portfolio-7dqj.vercel.app/
+**Live site:** https://sayedmirchoni-portfolio.vercel.app/
 
 ![Portfolio preview](public/og-image.png)
 
